@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#8B1A1A">
+  <meta name="csrf-token" content="">
+  <meta name="google-site-verification" content="YVabcBuFugCw2Rz8gIGLJ8BOowJXjIp7NnspJBfxoi8" />
+  <title>Free Temporary Email Generator, No Signup | Disposable Email for Testing | RunExe Technology</title>
+  <meta name="description" content="Create a free temporary email instantly. No signup required. Perfect for testing, privacy, and quick registrations. Built by RunExe Technology.">
+  <meta name="keywords" content="temporary email generator free no signup, disposable email for testing, temp mail for developers, free temp mail no account, throwaway email QA, RunExe Technology">
+  <meta name="author" content="RunExe Technology">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://runexe.tech/tools/tempmail">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RunExe Technology">
+  <meta property="og:title" content="Free Temporary Email Generator, No Signup | Disposable Email for Testing | RunExe Technology">
+  <meta property="og:description" content="Create a free temporary email instantly. No signup required. Perfect for testing, privacy, and quick registrations. Built by RunExe Technology.">
+  <meta property="og:url" content="https://runexe.tech/tools/tempmail">
+  <meta property="og:locale" content="en_IN">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Temporary Email Generator, No Signup | Disposable Email for Testing | RunExe Technology">
+  <meta name="twitter:description" content="Create a free temporary email instantly. No signup required. Perfect for testing, privacy, and quick registrations. Built by RunExe Technology.">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"RunExe Technology — Temporary Email Generator (Free, No Signup)","description":"Create a free temporary email instantly. No signup required. Perfect for testing, privacy, and quick registrations. Built by RunExe Technology.","url":"https://runexe.tech/tools/tempmail","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","provider":{"@type":"Organization","name":"RunExe Technology","url":"https://runexe.tech","description":"Custom software, web development, and IT consulting — RunExe Technology."}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this a temporary email generator free with no signup?","acceptedAnswer":{"@type":"Answer","text":"Yes. You do not create an account: generate an address, copy it, and refresh the inbox when you expect mail. It is a free temporary email generator with no signup—ideal for quick tests and privacy-minded signups."}},{"@type":"Question","name":"Can I use this as disposable email for testing?","acceptedAnswer":{"@type":"Answer","text":"Yes. Disposable email for testing is a core use case: QA and developers use a fresh address per test run to verify welcome mail, password resets, invoices, and localization—without polluting real user inboxes or personal Gmail aliases."}},{"@type":"Question","name":"Is this temp mail for developers only?","acceptedAnswer":{"@type":"Answer","text":"Developers and QA teams get the most from temp mail for developers (API-backed inbox, .eml download, SPF/DKIM badges)—but anyone can use it for privacy, trials, or one-off signups. No coding required to use the generator."}},{"@type":"Question","name":"Is temp mail the same as a fake email?","acceptedAnswer":{"@type":"Answer","text":"“Fake” often means the address cannot receive mail. This temp mail inbox really receives messages (verification codes, magic links). We use real receiving infrastructure so your disposable email for testing behaves like production mail."}},{"@type":"Question","name":"How long are messages kept?","acceptedAnswer":{"@type":"Answer","text":"Retention depends on your Testmail namespace settings. Treat addresses as short-lived: export anything important (.eml) and do not rely on temp mail for long-term account recovery."}},{"@type":"Question","name":"Can I use this for spam or abuse?","acceptedAnswer":{"@type":"Answer","text":"No. Use it only for lawful testing, privacy, and legitimate signups. RunExe Technology forbids spam, fraud, harassment, or breaking third-party terms of service."}}]}
+  </script>
+  <link rel="icon" type="image/png" href="../assets/runexe-logo.png" />
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:#0B0B0B}
+#app{font-family:'Inter',sans-serif;min-height:100vh;width:100%;background:linear-gradient(135deg,#0B0B0B 0%,#1C1C1C 50%,#161616 100%);background-attachment:fixed;position:relative;overflow-x:hidden;padding-bottom:24px;display:flex;flex-direction:column}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:0.25;pointer-events:none;z-index:0}
+.orb1{width:min(420px,90vw);height:min(420px,90vw);background:#8B1A1A;top:-80px;left:-80px}
+.orb2{width:min(300px,70vw);height:min(300px,70vw);background:#8B1A1A;bottom:60px;right:-60px}
+.orb3{width:min(220px,50vw);height:min(220px,50vw);background:#8B1A1A;top:45%;left:55%}
+section{position:relative;z-index:1}
+
+/* HERO */
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(14px,3.2vw,32px) clamp(16px,4vw,24px) clamp(12px,2.5vw,22px);text-align:center;flex-shrink:0}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(139,26,26,0.18);border:1px solid rgba(139,26,26,0.4);border-radius:100px;padding:5px 14px;font-size:11px;color:#D45C5C;margin-bottom:10px;letter-spacing:0.04em}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:#D45C5C;animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+h1{font-size:clamp(22px,5vw,40px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:6px;letter-spacing:-0.02em}
+h1 span{background:linear-gradient(90deg,#D45C5C,#D45C5C,#D45C5C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:clamp(13px,2.2vw,15px);color:rgba(255,255,255,0.5);margin-bottom:12px;max-width:min(520px,92vw);line-height:1.55}
+.email-card{background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:clamp(14px,3vw,22px);width:100%;max-width:min(560px,94vw);transition:border-color 0.3s}
+.email-card:hover{border-color:rgba(139,26,26,0.4)}
+.gen-btn{width:100%;padding:clamp(13px,3vw,15px) 24px;border-radius:14px;border:none;background:linear-gradient(135deg,#8B1A1A,#6B1414);color:#fff;font-size:clamp(14px,2.5vw,16px);font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;position:relative;overflow:hidden}
+.gen-btn:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(139,26,26,0.45)}
+.gen-btn:active{transform:scale(0.99)}
+.gen-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent)}
+.email-display{display:none;margin-top:14px;animation:fadeUp 0.4s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.email-row{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:clamp(10px,2vw,13px) 14px}
+.email-input{flex:1;background:none;border:none;outline:none;color:#e2e8f0;font-size:clamp(11px,2.5vw,15px);font-family:'Inter',sans-serif;font-weight:500;min-width:0}
+.icon-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:7px;cursor:pointer;color:#D45C5C;display:flex;flex-shrink:0;transition:all 0.2s;position:relative}
+.icon-btn:hover{background:rgba(139,26,26,0.25);border-color:rgba(139,26,26,0.4)}
+.tooltip{position:absolute;bottom:calc(100%+8px);left:50%;transform:translateX(-50%);background:#1C1C1C;color:#D45C5C;font-size:11px;padding:4px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 0.2s;border:1px solid rgba(139,26,26,0.3)}
+.tooltip.show{opacity:1}
+.actions-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px}
+.timer-txt{font-size:11px;color:rgba(255,255,255,0.35)}
+.refresh-btn{display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 12px;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+.refresh-btn:hover{border-color:rgba(139,26,26,0.5);color:#D45C5C}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MAILBOX */
+.mailbox{display:none;padding:0 clamp(12px,3vw,20px) clamp(12px,2.5vw,22px);animation:fadeUp 0.5s ease forwards;flex-shrink:0}
+.mailbox-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:visible;display:flex;flex-direction:column;padding:0 14px;max-width:min(1160px,100%);margin:0 auto}
+.mac-bar{display:flex;align-items:center;gap:8px;padding:8px 4px 6px}
+.mac-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,0.3) inset}
+.mac-dot.red{background:#ff5f57}
+.mac-dot.yellow{background:#febc2e}
+.mac-dot.green{background:#28c840}
+.mac-spacer{flex:1}
+
+/* SEO / guide — pinned to bottom of viewport (above footer) when page is short */
+.seo-content{padding:clamp(14px,3vw,28px) clamp(12px,3vw,20px) clamp(12px,2.5vw,22px);position:relative;z-index:1;margin-top:auto;flex-shrink:0}
+.seo-content-inner{max-width:min(1160px,100%);margin:0 auto;width:100%}
+.seo-guide-accordion{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:18px;overflow:hidden}
+.seo-guide-summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;cursor:pointer;list-style:none;padding:12px 16px;font-family:'Inter',sans-serif;background:rgba(0,0,0,0.22);transition:background 0.2s,border-color 0.2s}
+.seo-guide-summary::-webkit-details-marker{display:none}
+.seo-guide-summary:hover{background:rgba(139,26,26,0.14)}
+.seo-guide-accordion[open] .seo-guide-summary{border-bottom:1px solid rgba(255,255,255,0.08)}
+.seo-guide-summary-text{display:flex;flex-direction:column;align-items:flex-start;gap:4px;flex:1;min-width:0}
+.seo-guide-summary-kicker{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#D45C5C}
+.seo-guide-summary-title{font-size:clamp(14px,2.5vw,16px);font-weight:600;color:#f1f5f9;line-height:1.35;text-align:left}
+.seo-guide-summary-hint{font-size:11px;color:rgba(255,255,255,0.38);font-weight:500}
+.seo-guide-summary-chevron{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:rgba(139,26,26,0.2);border:1px solid rgba(139,26,26,0.35);display:flex;align-items:center;justify-content:center;color:#D45C5C;font-size:14px;font-weight:700;transition:transform 0.25s ease}
+.seo-guide-accordion[open] .seo-guide-summary-chevron{transform:rotate(180deg)}
+.seo-guide-panel{padding:clamp(12px,2vw,18px) clamp(14px,2.5vw,22px) 14px}
+.seo-content h2{font-size:clamp(1.02rem,2vw,1.22rem);font-weight:700;color:#f1f5f9;margin:1.05rem 0 0.4rem;letter-spacing:-0.02em;line-height:1.3}
+.seo-guide-panel h2:first-of-type{margin-top:0}
+.seo-content p{font-size:13px;line-height:1.58;color:rgba(255,255,255,0.68);margin:0 0 0.68rem}
+.seo-content ul{margin:0 0 0.85rem;padding-left:1.2rem;color:rgba(255,255,255,0.65);line-height:1.55;font-size:13px}
+.seo-content li{margin:0.32em 0}
+.seo-content strong{color:rgba(226,232,240,0.95);font-weight:600}
+.seo-lead{font-size:clamp(13px,1.9vw,15px);line-height:1.58;color:rgba(255,255,255,0.72);margin:0 0 0.85rem}
+.seo-faq{margin-top:1.05rem;padding-top:0.9rem;border-top:1px solid rgba(255,255,255,0.08)}
+.seo-faq > h2{margin-top:0}
+.seo-faq details{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:12px;margin-bottom:8px;padding:11px 14px;transition:border-color 0.2s}
+.seo-faq details[open]{border-color:rgba(139,26,26,0.25)}
+.seo-faq summary{cursor:pointer;font-weight:600;color:#e2e8f0;font-size:14px;list-style:none;position:relative;padding-right:24px}
+.seo-faq summary::-webkit-details-marker{display:none}
+.seo-faq summary::after{content:'+';position:absolute;right:0;top:0;color:#D45C5C;font-weight:700}
+.seo-faq details[open] summary::after{content:'–'}
+.seo-faq details p{margin:10px 0 0;font-size:13px;line-height:1.62;color:rgba(255,255,255,0.62)}
+.seo-content a{color:#e9b8b8;text-decoration:underline;text-underline-offset:2px}
+.seo-content a:hover{color:#e9b8b8}
+
+/* FOOTER */
+.footer{padding:22px 16px 8px;text-align:center;color:rgba(255,255,255,0.45);font-size:12px;line-height:1.6;margin-top:0;flex-shrink:0}
+.footer strong{color:rgba(255,255,255,0.75);font-weight:600}
+
+/* SCROLLBAR */
+*{scrollbar-width:thin;scrollbar-color:#8B1A1A rgba(15,12,41,0.5)}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:rgba(15,12,41,0.5)}
+*::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#8B1A1A,#6B1414);border-radius:999px;border:2px solid rgba(15,12,41,0.5)}
+*::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#A12D2F,#8B1A1A)}
+
+/* MOBILE TABS */
+.tab-bar{display:none;border-bottom:1px solid rgba(255,255,255,0.08)}
+.tab-btn{flex:1;padding:13px 8px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;position:relative}
+.tab-btn.active{color:#D45C5C}
+.tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:linear-gradient(90deg,#8B1A1A,#6B1414);border-radius:2px 2px 0 0}
+
+/* SPLIT — height follows inbox + message content (no capped preview pane) */
+.split{display:flex;align-items:stretch}
+.list-panel{width:280px;min-width:240px;border-right:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;position:relative;min-height:0}
+.list-panel--loading .email-list{opacity:0.72;transition:opacity 0.2s}
+.list-panel--loading .panel-title::after{content:' · …';color:rgba(212,92,92,0.7);font-weight:500}
+.skel-row{padding:11px;margin-bottom:4px}
+.panel-header{padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.06em;text-transform:uppercase}
+.count-badge{background:linear-gradient(135deg,#8B1A1A,#6B1414);color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px}
+.email-list{flex:1;overflow-y:auto;padding:6px;min-height:0}
+.email-item{padding:11px;border-radius:12px;cursor:pointer;transition:all 0.2s;margin-bottom:3px;border:1px solid transparent}
+.email-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.08)}
+.email-item.active{background:rgba(139,26,26,0.18);border-color:rgba(139,26,26,0.35)}
+.item-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:10px;flex-wrap:wrap}
+.item-top-main{display:flex;align-items:center;min-width:0;flex:1;gap:6px}
+.item-top-meta{display:flex;align-items:center;gap:12px;flex-shrink:0;margin-left:auto}
+.sender{font-size:13px;font-weight:600;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.item-time{font-size:10px;color:rgba(255,255,255,0.28);white-space:nowrap}
+.item-subject{font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-preview{font-size:11px;color:rgba(255,255,255,0.28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unread-dot{width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,#D45C5C,#D45C5C);flex-shrink:0;margin-right:5px}
+.preview-panel{flex:1;display:flex;flex-direction:column;min-width:0;background:transparent}
+#previewContent{display:none;flex-direction:column;flex:0 1 auto;min-width:0;width:100%;overflow:visible}
+.preview-header{padding:clamp(14px,3vw,18px) clamp(14px,3vw,20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.preview-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:clamp(12px,3vw,20px);margin-bottom:12px;flex-wrap:wrap}
+.preview-subject{font-size:clamp(14px,2.5vw,17px);font-weight:700;color:#f1f5f9;margin:0;line-height:1.35;flex:1;min-width:min(100%,220px)}
+.preview-header-rep{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end}
+.meta-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.meta-label{font-size:11px;color:rgba(255,255,255,0.28);min-width:28px}
+.meta-value{font-size:12px;color:rgba(255,255,255,0.6);word-break:break-all}
+.preview-body{flex:0 1 auto;min-width:0;padding:clamp(12px,2.5vw,18px);font-size:14px;line-height:1.75;color:rgba(255,255,255,0.78);width:100%;overflow:visible}
+.preview-body-inner{font-size:14px;line-height:1.75;color:rgba(255,255,255,0.82);overflow-wrap:anywhere;word-break:break-word}
+.preview-body-inner *{max-width:100%;box-sizing:border-box}
+.preview-body-inner img{height:auto;display:block}
+.preview-body-inner p{margin:0.65em 0}
+.preview-body-inner a{color:#e9b8b8;text-decoration:underline}
+.preview-body-inner h1,.preview-body-inner h2,.preview-body-inner h3,.preview-body-inner h4{font-size:1.05em!important;line-height:1.35!important;margin:0.85em 0 0.45em!important;font-weight:700!important;color:#f1f5f9!important}
+.preview-body-inner font{font-size:inherit!important}
+.preview-body-inner [style*="font-size"]{font-size:14px!important;line-height:1.7!important}
+.preview-body-inner [style*="line-height"]{line-height:1.7!important}
+.preview-body-inner div,.preview-body-inner span{font-size:14px!important}
+.preview-body-inner pre{white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:13px;margin:0.5em 0}
+.attachments{padding:clamp(12px,3vw,16px) clamp(14px,3vw,20px);border-top:1px solid rgba(255,255,255,0.06)}
+.att-title{font-size:11px;font-weight:600;color:rgba(255,255,255,0.32);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px}
+.att-list{display:flex;gap:8px;flex-wrap:wrap}
+.att-card{background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all 0.2s;max-width:100%}
+.att-card:hover{border-color:rgba(139,26,26,0.4);background:rgba(139,26,26,0.1)}
+.att-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.att-icon.pdf{background:rgba(239,68,68,0.15)}
+.att-icon.img{background:rgba(16,185,129,0.15)}
+.att-info{flex:1;min-width:0}
+.att-name{font-size:11px;font-weight:500;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(260px,42vw)}
+.att-size{font-size:10px;color:rgba(255,255,255,0.28)}
+.dl-btn{background:rgba(139,26,26,0.2);border:1px solid rgba(139,26,26,0.3);border-radius:6px;padding:4px 9px;font-size:10px;color:#D45C5C;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;flex-shrink:0;text-decoration:none}
+.dl-btn:hover{background:rgba(139,26,26,0.35)}
+.att-icon.file{background:rgba(212,92,92,0.15)}
+.rep-mini{display:inline-flex;gap:8px;align-items:center;flex-shrink:0;padding-left:4px}
+.rep-dot{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;font-size:10px;font-weight:700;line-height:1}
+.rep-dot.rep-ok{background:rgba(16,185,129,0.22);color:#34d399;border:1px solid rgba(52,211,153,0.45)}
+.rep-dot.rep-bad{background:rgba(239,68,68,0.18);color:#f87171;border:1px solid rgba(248,113,113,0.4)}
+.rep-dot.rep-neutral{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.38);border:1px solid rgba(255,255,255,0.12)}
+.rep-row{display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center;margin-top:14px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06)}
+.rep-row--header{margin:0;padding:0;border:none;gap:8px 10px;justify-content:flex-end}
+.rep-row--header .rep-pill{padding:6px 11px;font-size:10px;gap:6px}
+.rep-row--header .rep-pill .tick{font-size:11px}
+.rep-pill{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.12)}
+.rep-pill.rep-ok{color:#34d399;background:rgba(16,185,129,0.12);border-color:rgba(52,211,153,0.35)}
+.rep-pill.rep-bad{color:#f87171;background:rgba(239,68,68,0.1);border-color:rgba(248,113,113,0.35)}
+.rep-pill.rep-neutral{color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.05)}
+.rep-pill .tick{font-size:13px;line-height:1;display:inline-flex;align-items:center;justify-content:center;min-width:1.1em}
+.preview-eml-footer{padding:clamp(16px,3vw,22px) clamp(14px,3vw,20px) clamp(18px,3vw,24px);border-top:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.12)}
+.btn-eml{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:440px;margin:0 auto;padding:13px 20px;border-radius:14px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;color:#fff;text-decoration:none;background:linear-gradient(135deg,#8B1A1A,#6B1414);border:1px solid rgba(139,26,26,0.45);box-shadow:0 6px 24px rgba(139,26,26,0.25);transition:transform 0.15s,box-shadow 0.15s}
+.btn-eml:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(139,26,26,0.35)}
+.btn-eml:active{transform:scale(0.99)}
+.eml-hint{text-align:center;font-size:11px;color:rgba(255,255,255,0.38);margin-top:12px;line-height:1.5;max-width:420px;margin-left:auto;margin-right:auto}
+.empty-state{flex:0 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(40px,10vh,88px) 20px;min-height:min(380px,58vh);text-align:center;opacity:0.45}
+.empty-title{font-size:clamp(15px,2.2vw,17px);font-weight:500;color:rgba(255,255,255,0.6);margin-bottom:8px}
+.empty-sub{font-size:clamp(13px,1.8vw,14px);color:rgba(255,255,255,0.3);max-width:280px;line-height:1.45}
+.skel{background:rgba(255,255,255,0.07);border-radius:6px;animation:skel 1.5s ease infinite}
+@keyframes skel{0%,100%{opacity:0.4}50%{opacity:0.85}}
+.back-btn{display:none;align-items:center;gap:6px;background:none;border:none;color:#D45C5C;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;padding:12px 16px 0;font-weight:500}
+
+/* ── MOBILE ≤600px ── */
+@media(max-width:600px){
+  #app{min-height:100vh;padding-bottom:32px}
+  .tab-bar{display:flex}
+  .split{flex-direction:column}
+  .list-panel{width:100%;min-width:unset;border-right:none;border-bottom:none}
+  .panel-header{display:none}
+  .email-list{padding:8px}
+  .preview-panel{display:none}
+  .preview-panel.mobile-show{display:flex}
+  .list-panel.mobile-hide{display:none}
+  .back-btn{display:flex}
+  .mailbox{padding:0 12px 28px}
+  .mailbox-card{border-radius:16px}
+  .email-card{border-radius:16px}
+  .email-row{flex-wrap:wrap;row-gap:10px}
+  .email-input{font-size:14px}
+  .actions-row{flex-direction:column;align-items:flex-start}
+  .refresh-btn{width:100%;justify-content:center}
+  .item-top{gap:8px}
+  .item-top-meta{width:100%;justify-content:flex-end;margin-left:0;padding-top:2px}
+  .sender{max-width:160px}
+  .meta-row{flex-wrap:wrap}
+  .meta-label{min-width:unset}
+  .preview-header-top{flex-direction:column;align-items:stretch}
+  .preview-header-rep{justify-content:flex-end;width:100%}
+  .att-list{flex-direction:column}
+  .att-card{width:100%}
+}
+
+@media(max-width:420px){
+  .hero{padding-top:28px}
+  h1{font-size:clamp(24px,8vw,36px)}
+  .sub{max-width:320px}
+  .email-row{padding:10px 12px}
+  .icon-btn{padding:9px}
+  .preview-body{padding:14px}
+}
+
+/* ── TABLET 601–900px ── */
+@media(min-width:601px) and (max-width:900px){
+  .list-panel{width:210px;min-width:190px}
+  .sender{max-width:100px}
+}
+
+@media (min-width:960px){
+  .seo-guide-panel{
+    column-count:2;
+    column-gap:clamp(1.25rem,3vw,2.25rem);
+    column-rule:1px solid rgba(255,255,255,0.06);
+  }
+  .seo-guide-panel > .seo-lead,
+  .seo-guide-panel > h2,
+  .seo-guide-panel > .seo-faq{column-span:all}
+  .seo-guide-panel > ul{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <section class="hero">
+    <div class="badge"><div class="pulse-dot"></div>Instant · Private · Free</div>
+    <h1>Free temporary email<br><span>generator — no signup</span></h1>
+    <p class="sub">Disposable email for testing and temp mail for developers. Generate an inbox in one click—no account.</p>
+    <div class="email-card">
+      <button class="gen-btn" id="genBtn" onclick="generateEmail()">✦ Generate Email Address</button>
+      <div class="email-display" id="emailDisplay">
+        <div class="email-row">
+          <svg width="15" height="15" fill="none" stroke="#D45C5C" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 7 10-7"/></svg>
+          <input class="email-input" id="emailVal" readonly value="">
+          <div class="icon-btn" onclick="copyEmail()">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <div class="tooltip" id="copyTip">Copied!</div>
+          </div>
+        </div>
+        <div class="actions-row">
+          <span class="timer-txt" id="timerTxt">Expires in 10:00</span>
+          <button type="button" class="refresh-btn" onclick="refreshInbox({ manual: true })">
+            <svg id="refreshIcon" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+            Refresh inbox
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mailbox" id="mailbox">
+    <div class="mailbox-card">
+      <div class="mac-bar" aria-hidden="true">
+        <span class="mac-dot red"></span>
+        <span class="mac-dot yellow"></span>
+        <span class="mac-dot green"></span>
+        <span class="mac-spacer"></span>
+      </div>
+      <div class="tab-bar" id="tabBar">
+        <button class="tab-btn active" id="tabInbox" onclick="switchTab('inbox')">
+          ✉ Inbox&nbsp;<span id="tabCount" style="display:inline-block;background:linear-gradient(135deg,#8B1A1A,#6B1414);color:#fff;font-size:10px;padding:1px 7px;border-radius:100px">0</span>
+        </button>
+        <button class="tab-btn" id="tabPreview" onclick="switchTab('preview')">✦ Preview</button>
+      </div>
+
+      <div class="split">
+        <div class="list-panel" id="listPanel">
+          <div class="panel-header">
+            <span class="panel-title">Inbox</span>
+            <span class="count-badge">0</span>
+          </div>
+          <div class="email-list" id="emailList" role="list" aria-live="polite" aria-busy="false"></div>
+        </div>
+
+        <div class="preview-panel" id="previewPanel">
+          <button class="back-btn" id="backBtn" onclick="switchTab('inbox')" style="display:none">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            Back to inbox
+          </button>
+          <div class="empty-state" id="emptyState">
+            <div style="font-size:clamp(44px,8vw,56px);margin-bottom:18px;line-height:1">✉</div>
+            <div class="empty-title">Select an email</div>
+            <div class="empty-sub">Click any message to read it</div>
+          </div>
+          <div id="previewContent"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-content" role="region" aria-label="Guide: temporary email generator free no signup, disposable email for testing, temp mail for developers">
+    <div class="seo-content-inner">
+      <details class="seo-guide-accordion">
+        <summary class="seo-guide-summary">
+          <span class="seo-guide-summary-text">
+            <span class="seo-guide-summary-kicker">Guide</span>
+            <span class="seo-guide-summary-title">Temporary email generator, disposable testing &amp; temp mail for developers</span>
+            <span class="seo-guide-summary-hint">Click to expand — full article &amp; FAQs</span>
+          </span>
+          <span class="seo-guide-summary-chevron" aria-hidden="true">▾</span>
+        </summary>
+        <div class="seo-guide-panel">
+      <p class="seo-lead">Looking for a <strong>temporary email generator free no signup</strong>, a <strong>disposable email for testing</strong>, or <strong>temp mail for developers</strong>? Below is how those searches map to a real inbox you can use in the browser—without creating an account.</p>
+
+      <h2>Temporary email generator (free, no signup)</h2>
+      <p>A <strong>temporary email generator free no signup</strong> means you get a working address immediately: no password, no profile, no credit card. You generate, copy, and paste into any form that must send you a confirmation. That is easier to rank for than the broad phrase “temporary email” alone—and it matches what people type when they are in a hurry.</p>
+      <p>Behind the scenes, the address still has to <em>receive</em> mail (OTP codes, magic links, receipts). RunExe Technology wires the UI to a proper inbox provider (<a href="https://testmail.app/docs" rel="noopener noreferrer">Testmail</a>) so you are not stuck with a dead “fake” string that never gets messages.</p>
+
+      <h2>Disposable email for testing</h2>
+      <p><strong>Disposable email for testing</strong> is how QA, product, and engineering teams keep staging clean. Each scenario gets its own throwaway address: sign up, trigger “forgot password,” assert the template and links, then move on. You avoid sharing personal Gmail, you reduce GDPR-style data in non-prod systems, and you can parallelize tests without alias limits.</p>
+      <p>Because our reader shows HTML, text, attachments, SPF/DKIM, and raw <strong>.eml</strong>, <strong>disposable email for testing</strong> doubles as a lightweight mail debugger—not just a vanity inbox.</p>
+
+      <h2>Temp mail for developers</h2>
+      <p><strong>Temp mail for developers</strong> usually implies API access, predictable tags, and tooling-friendly exports. Here you get a tag-scoped address (<strong>namespace.tag@inbox.testmail.app</strong>), server-side JSON fetch, and a refresh-when-you-need-it model that plays nicely with slow CI runners and local XAMPP-style hosting.</p>
+      <p>If you outgrow the browser UI, the same Testmail namespace powers automated suites; this page is the human-friendly front door. RunExe Technology builds custom software—consider this generator a nod to <strong>developer experience</strong> done simply.</p>
+
+      <h2>How it works (quick)</h2>
+      <p>Click <strong>Generate Email Address</strong>, use the copied value anywhere mail must arrive, then <strong>Refresh inbox</strong> to pull new messages. Filters keep the thread scoped to your session tag so you are not reading someone else’s <strong>temp mail for developers</strong> experiments.</p>
+
+      <h2>More use cases: privacy &amp; signups</h2>
+      <ul>
+        <li><strong>Privacy.</strong> Newsletters, “partner offers,” and tracking pixels stay off your real inbox.</li>
+        <li><strong>Trials &amp; downloads.</strong> Gate content with an address you can abandon after the PDF or replay.</li>
+        <li><strong>Agency demos.</strong> One clean <strong>disposable email for testing</strong> per client story, with readable HTML and attachments.</li>
+      </ul>
+      <p>Whether you arrived via <strong>temporary email generator free no signup</strong>, <strong>disposable email for testing</strong>, or <strong>temp mail for developers</strong>, the flow is the same: fast, free, and honest about what the inbox can do.</p>
+
+      <div class="seo-faq">
+        <h2>FAQs</h2>
+        <details>
+          <summary>Is this a temporary email generator free with no signup?</summary>
+          <p>Yes. You do not create an account: generate an address, copy it, and refresh the inbox when you expect mail. It is a free temporary email generator with no signup—ideal for quick tests and privacy-minded signups.</p>
+        </details>
+        <details>
+          <summary>Can I use this as disposable email for testing?</summary>
+          <p>Yes. Disposable email for testing is a core use case: QA and developers use a fresh address per test run to verify welcome mail, password resets, invoices, and localization—without polluting real user inboxes or personal Gmail aliases.</p>
+        </details>
+        <details>
+          <summary>Is this temp mail for developers only?</summary>
+          <p>Developers and QA teams get the most from temp mail for developers (API-backed inbox, .eml download, SPF/DKIM badges)—but anyone can use it for privacy, trials, or one-off signups. No coding required to use the generator.</p>
+        </details>
+        <details>
+          <summary>Is temp mail the same as a fake email?</summary>
+          <p>“Fake” often means the address cannot receive mail. This temp mail inbox really receives messages (verification codes, magic links). We use real receiving infrastructure so your disposable email for testing behaves like production mail.</p>
+        </details>
+        <details>
+          <summary>How long are messages kept?</summary>
+          <p>Retention depends on your Testmail namespace settings. Treat addresses as short-lived: export anything important (.eml) and do not rely on temp mail for long-term account recovery.</p>
+        </details>
+        <details>
+          <summary>Can I use this for spam or abuse?</summary>
+          <p>No. Use it only for lawful testing, privacy, and legitimate signups. RunExe Technology forbids spam, fraud, harassment, or breaking third-party terms of service.</p>
+        </details>
+      </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div><strong>Built by RunExe Technology</strong> — Custom software &amp; web development services</div>
+    <div>© 2026 RunExe Technology. All rights reserved.</div>
+  </footer>
+</div>
+
+<script>
+let inboxEmails = [];
+let currentEmail = null, timerSec = 600, timerInt = null, generated = false;
+let mailboxTag = null;
+let mailboxTimestampFrom = null;
+let inboxFetchDepth = 0;
+
+function isMobile(){return window.innerWidth<=600}
+
+function csrfToken(){
+  return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+}
+
+function apiEndpoint(){
+  if (location.protocol === 'file:') {
+    return 'http://localhost/runexe.fable/tools/tempmail-api.php';
+  }
+  return 'tempmail-api.php';
+}
+
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+}
+
+function fmtTime(ts){
+  if(!ts) return '';
+  const n = Number(ts);
+  if(Number.isNaN(n)) return '';
+  const d = new Date(n);
+  const diff = Math.max(0, Date.now() - d.getTime());
+  const mins = Math.floor(diff / 60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if(hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
+
+function updateCounts(){
+  const c = inboxEmails.length;
+  const tabCount = document.getElementById('tabCount');
+  const countBadges = document.querySelectorAll('.count-badge');
+  if(tabCount) tabCount.textContent = String(c);
+  countBadges.forEach(b => b.textContent = String(c));
+}
+
+function syncListLoadingUi(){
+  const panel = document.getElementById('listPanel');
+  const list = document.getElementById('emailList');
+  const busy = inboxFetchDepth > 0;
+  const empty = inboxEmails.length === 0;
+  if(panel) panel.classList.toggle('list-panel--loading', busy && empty);
+  if(list) list.setAttribute('aria-busy', busy && empty ? 'true' : 'false');
+}
+
+function beginInboxFetch(){
+  inboxFetchDepth++;
+  syncListLoadingUi();
+}
+
+function endInboxFetch(){
+  inboxFetchDepth = Math.max(0, inboxFetchDepth - 1);
+  syncListLoadingUi();
+  // Requests call renderEmails before finally; when last fetch ends, swap skeleton → empty state if still no mail.
+  if(inboxFetchDepth === 0 && inboxEmails.length === 0){
+    renderEmails();
+  }
+}
+
+function repTier(v){
+  const s = String(v ?? '').toLowerCase();
+  if (s === 'pass' || s === 'bestpass') return 'ok';
+  if (s === 'fail' || s === 'softfail') return 'bad';
+  return 'neutral';
+}
+
+function repLabel(tier){
+  if (tier === 'ok') return '✓';
+  if (tier === 'bad') return '✕';
+  return '—';
+}
+
+function repMiniHtml(spf, dkim){
+  const ts = `SPF: ${spf || '—'} · DKIM: ${dkim || '—'}`;
+  const sp = repTier(spf), dk = repTier(dkim);
+  return `<span class="rep-mini" title="${escapeHtml(ts)}"><span class="rep-dot rep-${sp}" title="SPF: ${escapeHtml(spf || '—')}">${repLabel(sp)}</span><span class="rep-dot rep-${dk}" title="DKIM: ${escapeHtml(dkim || '—')}">${repLabel(dk)}</span></span>`;
+}
+
+function repRowHtml(spf, dkim){
+  const sp = repTier(spf), dk = repTier(dkim);
+  return `<div class="rep-row rep-row--header" title="Email authentication"><span class="rep-pill rep-${sp}"><span class="tick">${repLabel(sp)}</span> SPF <span style="opacity:.75;font-weight:500">${escapeHtml(spf || '—')}</span></span><span class="rep-pill rep-${dk}"><span class="tick">${repLabel(dk)}</span> DKIM <span style="opacity:.75;font-weight:500">${escapeHtml(dkim || '—')}</span></span></div>`;
+}
+
+function fmtFileSize(bytes){
+  const n = Number(bytes);
+  if (!Number.isFinite(n) || n < 0) return '';
+  if (n < 1024) return `${n} B`;
+  if (n < 1048576) return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / 1048576).toFixed(1)} MB`;
+}
+
+function attKind(contentType, filename){
+  const c = String(contentType || '').toLowerCase();
+  const f = String(filename || '').toLowerCase();
+  if (c.includes('pdf') || f.endsWith('.pdf')) return 'pdf';
+  if (c.startsWith('image/')) return 'img';
+  return 'file';
+}
+
+function buildAttachmentsHtml(attachments){
+  let html = '';
+  const list = Array.isArray(attachments) ? attachments : [];
+  if (list.length){
+    const cards = list.map(a=>{
+      const url = a.downloadUrl || '';
+      const name = escapeHtml(a.filename || 'file');
+      const sz = fmtFileSize(a.size);
+      const kind = attKind(a.contentType, a.filename);
+      const icon = kind === 'pdf' ? '📄' : kind === 'img' ? '🖼' : '📎';
+      const inner = `<div class="att-icon ${kind}">${icon}</div><div class="att-info"><div class="att-name" title="${name}">${name}</div><div class="att-size">${escapeHtml(sz || a.contentType || '')}</div></div>`;
+      if (url) return `<a class="att-card" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${inner}<span class="dl-btn">↓ Open</span></a>`;
+      return `<div class="att-card">${inner}</div>`;
+    }).join('');
+    html += `<div class="attachments"><div class="att-title">Attachments (${list.length})</div><div class="att-list">${cards}</div></div>`;
+  }
+  return html;
+}
+
+function buildEmlFooter(emlUrl){
+  if (!emlUrl) return '';
+  return `<div class="preview-eml-footer"><a class="btn-eml" href="${escapeHtml(emlUrl)}" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download raw .eml</a><p class="eml-hint">Full RFC822 message for archiving, forwarding, or debugging. Opens in a new tab.</p></div>`;
+}
+
+function mapApiEmail(e, idx){
+  const raw = e.raw || {};
+  let fromAddr = e.from_address;
+  let fromNm = e.from_name;
+  const fp = raw.from_parsed;
+  if (!fromAddr && Array.isArray(fp) && fp[0] && typeof fp[0] === 'object'){
+    fromAddr = fp[0].address || null;
+    fromNm = (fp[0].name !== undefined && fp[0].name !== '') ? fp[0].name : fromNm;
+  }
+  return {
+    id: e.id ?? `${e.timestamp ?? ''}-${idx}`,
+    sender: e.from_name || fromNm || (fromAddr ? String(fromAddr).split('@')[0] : '') || 'Sender',
+    from: e.from || fromAddr || '',
+    subject: e.subject || '(no subject)',
+    preview: (e.text ? String(e.text).slice(0, 90) : '') || '',
+    time: fmtTime(e.timestamp),
+    unread: true,
+    html: e.html || null,
+    text: e.text || null,
+    spf: e.spf ?? raw.SPF ?? raw.spf ?? null,
+    dkim: e.dkim ?? raw.dkim ?? null,
+    attachments: Array.isArray(e.attachments) ? e.attachments : [],
+    downloadUrl: e.downloadUrl ?? raw.downloadUrl ?? null,
+    raw,
+  };
+}
+
+function generateEmail(){
+  if(generated)return;generated=true;
+  const btn=document.getElementById('genBtn');
+  btn.textContent='Generating...';btn.style.opacity='0.75';btn.style.cursor='default';
+
+  fetch(apiEndpoint() + "?action=generate",{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':csrfToken()},
+    body: JSON.stringify({})
+  }).then(r=>r.json()).then(data=>{
+    if(!data?.ok) throw new Error(data?.message || 'Failed to generate email');
+    mailboxTag = data.tag;
+    mailboxTimestampFrom = data.timestamp_from;
+
+    document.getElementById('emailVal').value = data.email;
+    document.getElementById('emailDisplay').style.display='block';
+    btn.textContent='✓ Email Generated!';
+    btn.style.background='linear-gradient(135deg,#059669,#0d9488)';
+    startTimer();showMailbox();
+
+    refreshInbox({ manual: false });
+  }).catch(err=>{
+    generated=false;
+    btn.textContent='✦ Generate Email Address';
+    btn.style.opacity='1';btn.style.cursor='pointer';
+    const failed = String(err?.message || '').toLowerCase().includes('failed to fetch') || err?.name === 'TypeError';
+    alert(failed
+      ? 'Could not reach the PHP API. Start Apache in XAMPP and open:\nhttp://localhost/runexe.fable/tools/tempmail'
+      : (err?.message || 'Something went wrong'));
+  });
+}
+
+function startTimer(){
+  timerInt=setInterval(()=>{
+    timerSec--;
+    const m=Math.floor(timerSec/60),s=timerSec%60;
+    document.getElementById('timerTxt').textContent=`Expires in ${m}:${s.toString().padStart(2,'0')}`;
+    if(timerSec<=0){clearInterval(timerInt);document.getElementById('timerTxt').textContent='Session expired';}
+  },1000);
+}
+
+function copyEmail(){
+  navigator.clipboard.writeText(document.getElementById('emailVal').value).catch(()=>{});
+  const tip=document.getElementById('copyTip');tip.classList.add('show');
+  setTimeout(()=>tip.classList.remove('show'),1500);
+}
+
+function showMailbox(){
+  const mb=document.getElementById('mailbox');mb.style.display='block';
+  mb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function renderSkeletons(){
+  const el=document.getElementById('emailList');
+  if(!el) return;
+  el.innerHTML='';
+  for(let i=0;i<3;i++)el.innerHTML+=`<div class="skel-row" aria-hidden="true"><div class="skel" style="height:11px;width:55%;margin-bottom:8px"></div><div class="skel" style="height:10px;width:80%;margin-bottom:6px"></div><div class="skel" style="height:9px;width:48%"></div></div>`;
+}
+
+function renderEmails(){
+  const el=document.getElementById('emailList');
+  if(!el) return;
+
+  // Keep skeleton while a fetch is still in flight and the list is empty.
+  if(inboxEmails.length === 0 && inboxFetchDepth > 0){
+    renderSkeletons();
+    updateCounts();
+    syncListLoadingUi();
+    return;
+  }
+
+  el.innerHTML='';
+  inboxEmails.forEach(e=>el.appendChild(makeItem(e)));
+  updateCounts();
+  if(!inboxEmails.length){
+    el.innerHTML = `<div style="padding:18px;color:rgba(255,255,255,0.35);font-size:12px">No emails yet. Click “Refresh inbox” after something sends to this address.</div>`;
+  }
+  syncListLoadingUi();
+}
+
+function makeItem(e){
+  const d=document.createElement('div');
+  d.className='email-item'+(currentEmail&&currentEmail.id===e.id?' active':'');
+  d.onclick=()=>openEmail(e,d);
+  const sender = escapeHtml(e.sender || 'Unknown');
+  const subject = escapeHtml(e.subject || '(no subject)');
+  const preview = escapeHtml(e.preview || '');
+  const time = escapeHtml(e.time || '');
+  const rep = repMiniHtml(e.spf, e.dkim);
+  const attHint = (e.attachments && e.attachments.length) ? `<span style="font-size:10px;color:rgba(212,92,92,0.85);margin-left:4px;flex-shrink:0" title="Has attachments">📎${e.attachments.length}</span>` : '';
+  d.innerHTML=`<div class="item-top"><div class="item-top-main">${e.unread?'<div class="unread-dot"></div>':''}<span class="sender">${sender}</span>${attHint}</div><div class="item-top-meta"><span class="item-time">${time}</span>${rep}</div></div><div class="item-subject">${subject}</div><div class="item-preview">${preview}</div>`;
+  return d;
+}
+
+function openEmail(e,el){
+  document.querySelectorAll('.email-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  e.unread=false;currentEmail=e;
+  if(isMobile())switchTab('preview');
+  document.getElementById('emptyState').style.display='none';
+  const pc=document.getElementById('previewContent');
+  pc.style.display='flex';
+  const tAddr=document.getElementById('emailVal').value;
+  const from = escapeHtml(e.from || '');
+  const at = escapeHtml(e.time || '');
+  const subject = escapeHtml(e.subject || '(no subject)');
+
+  let innerBody = '';
+  if(e.html){
+    innerBody = e.html;
+  }else if(e.text){
+    innerBody = `<pre>${escapeHtml(e.text)}</pre>`;
+  }else if(e.raw){
+    innerBody = `<pre>${escapeHtml(JSON.stringify(e.raw,null,2))}</pre>`;
+  }else{
+    innerBody = `<div style="opacity:.6">No body available.</div>`;
+  }
+  const bodyHtml = `<div class="preview-body-inner">${innerBody}</div>`;
+
+  const repBlock = repRowHtml(e.spf, e.dkim);
+  const attBlock = buildAttachmentsHtml(e.attachments);
+  const emlBlock = buildEmlFooter(e.downloadUrl);
+  pc.innerHTML=`<div class="preview-header"><div class="preview-header-top"><h2 class="preview-subject">${subject}</h2><div class="preview-header-rep" aria-label="SPF and DKIM">${repBlock}</div></div><div class="meta-row"><span class="meta-label">From</span><span class="meta-value">${from}</span></div><div class="meta-row"><span class="meta-label">To</span><span class="meta-value" style="color:#D45C5C">${escapeHtml(tAddr)}</span></div><div class="meta-row"><span class="meta-label">At</span><span class="meta-value">${at}</span></div></div><div class="preview-body">${bodyHtml}</div>${attBlock}${emlBlock}`;
+  updateCounts();
+}
+
+function switchTab(tab){
+  const lp=document.getElementById('listPanel'),pp=document.getElementById('previewPanel');
+  const ti=document.getElementById('tabInbox'),tp=document.getElementById('tabPreview');
+  const bb=document.getElementById('backBtn');
+  if(tab==='inbox'){
+    lp.classList.remove('mobile-hide');pp.classList.remove('mobile-show');
+    ti.classList.add('active');tp.classList.remove('active');bb.style.display='none';
+  }else{
+    lp.classList.add('mobile-hide');pp.classList.add('mobile-show');
+    tp.classList.add('active');ti.classList.remove('active');
+    if(currentEmail)bb.style.display='flex';
+  }
+}
+
+function refreshInbox(opts){
+  const o = opts || {};
+  const manual = o.manual === true;
+  const icon=document.getElementById('refreshIcon');
+  if(!mailboxTag) return;
+  if(manual) icon.classList.add('spin');
+
+  beginInboxFetch();
+  if(inboxEmails.length === 0) renderSkeletons();
+
+  const qs = new URLSearchParams({
+    tag: mailboxTag,
+    timestamp_from: mailboxTimestampFrom ? String(mailboxTimestampFrom) : '',
+  });
+
+  fetch(`${apiEndpoint()}?action=inbox&${qs.toString()}`,{
+    headers:{'Accept':'application/json'}
+  }).then(r=>r.json()).then(data=>{
+    if(!data?.ok) throw new Error(data?.message || 'Failed to fetch inbox');
+
+    inboxEmails = (data.emails || []).map(mapApiEmail);
+
+    renderEmails();
+  }).catch(err=>{
+    document.getElementById('emailList').innerHTML = `<div style="padding:18px;color:rgba(255,255,255,0.35);font-size:12px">${escapeHtml(err?.message || 'Failed to refresh inbox')}</div>`;
+  }).finally(()=>{
+    if(manual) icon.classList.remove('spin');
+    endInboxFetch();
+  });
+}
+</script>
+</body>
+</html>
