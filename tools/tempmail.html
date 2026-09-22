@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#8B1A1A">
   <meta name="csrf-token" content="">
   <meta name="google-site-verification" content="YVabcBuFugCw2Rz8gIGLJ8BOowJXjIp7NnspJBfxoi8" />
@@ -43,7 +43,7 @@ html,body{min-height:100%;background:#0B0B0B}
 section{position:relative;z-index:1}
 
 /* HERO */
-.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(14px,3.2vw,32px) clamp(16px,4vw,24px) clamp(12px,2.5vw,22px);text-align:center;flex-shrink:0}
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(clamp(14px,3.2vw,32px),env(safe-area-inset-top)) max(clamp(16px,4vw,24px),env(safe-area-inset-right)) clamp(12px,2.5vw,22px) max(clamp(16px,4vw,24px),env(safe-area-inset-left));text-align:center;flex-shrink:0}
 .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(139,26,26,0.18);border:1px solid rgba(139,26,26,0.4);border-radius:100px;padding:5px 14px;font-size:11px;color:#D45C5C;margin-bottom:10px;letter-spacing:0.04em}
 .pulse-dot{width:7px;height:7px;border-radius:50%;background:#D45C5C;animation:pulse 2s infinite;flex-shrink:0}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
@@ -59,7 +59,7 @@ h1 span{background:linear-gradient(90deg,#D45C5C,#D45C5C,#D45C5C);-webkit-backgr
 .email-display{display:none;margin-top:14px;animation:fadeUp 0.4s ease forwards}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .email-row{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:clamp(10px,2vw,13px) 14px}
-.email-input{flex:1;background:none;border:none;outline:none;color:#e2e8f0;font-size:clamp(11px,2.5vw,15px);font-family:'Inter',sans-serif;font-weight:500;min-width:0}
+.email-input{flex:1;background:none;border:none;outline:none;color:#e2e8f0;font-size:16px;font-family:'Inter',sans-serif;font-weight:500;min-width:0}
 .icon-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:7px;cursor:pointer;color:#D45C5C;display:flex;flex-shrink:0;transition:all 0.2s;position:relative}
 .icon-btn:hover{background:rgba(139,26,26,0.25);border-color:rgba(139,26,26,0.4)}
 .tooltip{position:absolute;bottom:calc(100%+8px);left:50%;transform:translateX(-50%);background:#1C1C1C;color:#D45C5C;font-size:11px;padding:4px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 0.2s;border:1px solid rgba(139,26,26,0.3)}
@@ -174,6 +174,8 @@ h1 span{background:linear-gradient(90deg,#D45C5C,#D45C5C,#D45C5C);-webkit-backgr
 .preview-body-inner [style*="line-height"]{line-height:1.7!important}
 .preview-body-inner div,.preview-body-inner span{font-size:14px!important}
 .preview-body-inner pre{white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:13px;margin:0.5em 0}
+.preview-body-inner table,.preview-body-inner iframe,.preview-body-inner video{max-width:100%}
+.preview-body-inner table{display:block;overflow-x:auto}
 .attachments{padding:clamp(12px,3vw,16px) clamp(14px,3vw,20px);border-top:1px solid rgba(255,255,255,0.06)}
 .att-title{font-size:11px;font-weight:600;color:rgba(255,255,255,0.32);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px}
 .att-list{display:flex;gap:8px;flex-wrap:wrap}
@@ -230,7 +232,9 @@ h1 span{background:linear-gradient(90deg,#D45C5C,#D45C5C,#D45C5C);-webkit-backgr
   .mailbox-card{border-radius:16px}
   .email-card{border-radius:16px}
   .email-row{flex-wrap:wrap;row-gap:10px}
-  .email-input{font-size:14px}
+  .email-input{font-size:16px}
+  .gen-btn,.refresh-btn,.tab-btn{min-height:44px}
+  .icon-btn{min-width:44px;min-height:44px}
   .actions-row{flex-direction:column;align-items:flex-start}
   .refresh-btn{width:100%;justify-content:center}
   .item-top{gap:8px}
@@ -245,7 +249,7 @@ h1 span{background:linear-gradient(90deg,#D45C5C,#D45C5C,#D45C5C);-webkit-backgr
 }
 
 @media(max-width:420px){
-  .hero{padding-top:28px}
+  .hero{padding-top:max(28px,env(safe-area-inset-top))}
   h1{font-size:clamp(24px,8vw,36px)}
   .sub{max-width:320px}
   .email-row{padding:10px 12px}
@@ -255,10 +259,19 @@ h1 span{background:linear-gradient(90deg,#D45C5C,#D45C5C,#D45C5C);-webkit-backgr
 
 /* ── TABLET 601–900px ── */
 @media(min-width:601px) and (max-width:900px){
-  .list-panel{width:210px;min-width:190px}
-  .sender{max-width:100px}
+  .list-panel{width:min(250px,36vw);min-width:0}
+  .sender{max-width:100%}
+  .item-top{flex-wrap:nowrap}
+  .item-top-main{min-width:0}
+  .preview-header-top{flex-wrap:wrap}
+  .rep-row--header{flex-wrap:wrap;justify-content:flex-start}
 }
 
+@media (max-width:600px){
+  .footer{padding-bottom:max(12px,env(safe-area-inset-bottom))}
+  .seo-faq summary{font-size:13.5px;line-height:1.4}
+  .mailbox-card,.email-card{min-width:0}
+}
 @media (min-width:960px){
   .seo-guide-panel{
     column-count:2;
