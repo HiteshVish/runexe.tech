@@ -1,0 +1,5 @@
+DirectoryIndex index.php
+Options -Indexes
+
+RedirectMatch 404 /tools/invoice/(vendor|lib|templates|data|bin)(/.*)?$
+RedirectMatch 404 /tools/invoice/(gst-config(\.example)?\.php|composer\.(json|lock)|README\.md)$

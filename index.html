@@ -652,7 +652,7 @@ html[data-theme="dark"] #theme-toggle .icon-sun{display:block}
 /* ---------- Tools ---------- */
 #tools{background:var(--bg-2)}
 .tools-grid{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:60px;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;margin-top:60px;
 }
 a.tool-card{color:inherit}
 .tool-card{
@@ -902,6 +902,7 @@ html.reduced .reveal{opacity:1;transform:none}
   .process-grid{grid-template-columns:1fr}
   .process-visual{display:none}
   .blog-grid{grid-template-columns:repeat(2,1fr)}
+  .tools-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .section.panel{position:relative;top:auto;padding:clamp(48px,8vh,90px) 0}
 }
 @media (max-width:680px){
@@ -1436,6 +1437,20 @@ html.reduced .reveal{opacity:1;transform:none}
         </div>
         <h3>JSON Formatter</h3>
         <p>Format, validate, and minify JSON data instantly in your browser — no data sent to any server.</p>
+        <div class="tool-meta">
+          <span>Open tool</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+        </div>
+      </a>
+      <a href="tools/invoice/" class="tool-card reveal" data-blip target="_blank" rel="noopener noreferrer">
+        <div class="tool-top">
+          <div class="tool-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+          </div>
+          <span class="tool-status">Live</span>
+        </div>
+        <h3>Invoice Generator</h3>
+        <p>Professional invoices for any country: no-tax, VAT and India GST (CGST/SGST/IGST, export under LUT). Live preview, 10 currencies and multi-page PDFs.</p>
         <div class="tool-meta">
           <span>Open tool</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>

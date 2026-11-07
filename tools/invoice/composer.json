@@ -1,0 +1,14 @@
+{
+    "name": "runexe/invoice-generator",
+    "description": "International invoice generator with India GST support",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "maxmind-db/reader": "^1.11",
+        "mpdf/mpdf": "^8.2"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
