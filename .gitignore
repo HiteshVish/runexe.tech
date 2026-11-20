@@ -1,3 +1,14 @@
 tools/invoice/vendor/
 tools/invoice/gst-config.php
 tools/invoice/data/
+legacy/tools/invoice/vendor/
+legacy/tools/invoice/gst-config.php
+legacy/tools/invoice/data/
+
+node_modules/
+.next/
+out/
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts

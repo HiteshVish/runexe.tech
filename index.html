@@ -198,10 +198,6 @@ html[data-theme="dark"] .logo-dark{display:block}
 }
 .icon-btn:hover{border-color:var(--crimson);color:var(--crimson)}
 .icon-btn svg{width:16px;height:16px}
-#sound-toggle .wave{transition:opacity .3s}
-#sound-toggle.muted .wave{opacity:0}
-#sound-toggle.muted .slash{opacity:1}
-#sound-toggle .slash{opacity:0;transition:opacity .3s}
 #theme-toggle .icon-sun{display:none}
 html[data-theme="dark"] #theme-toggle .icon-moon{display:none}
 html[data-theme="dark"] #theme-toggle .icon-sun{display:block}
@@ -963,13 +959,6 @@ html.reduced .reveal{opacity:1;transform:none}
     <li><a href="#tools">Tools</a></li>
   </ul>
   <div class="nav-right">
-    <button id="sound-toggle" class="icon-btn muted" aria-label="Toggle interface sounds" aria-pressed="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M11 5 6 9H3v6h3l5 4V5z"/>
-        <path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7"/>
-        <path class="slash" d="M22 3 2 21"/>
-      </svg>
-    </button>
     <button id="theme-toggle" class="icon-btn" aria-label="Switch to dark mode" aria-pressed="false">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/>
@@ -997,13 +986,13 @@ html.reduced .reveal{opacity:1;transform:none}
       </h1>
       <p class="hero-desc reveal-load">RunExe Technology is a software engineering studio — custom platforms, AI automation, mobile apps and cloud products, designed with precision and shipped with velocity.</p>
       <div class="hero-ctas reveal-load">
-        <a href="#contact" class="btn" data-magnetic data-blip>
+        <a href="#contact" class="btn" data-magnetic>
           <span class="btn-fill"></span>
           <span class="btn-label">Start a project
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </span>
         </a>
-        <a href="#work" class="btn btn--sm" data-magnetic data-blip style="border-color:var(--line)">
+        <a href="#work" class="btn btn--sm" data-magnetic style="border-color:var(--line)">
           <span class="btn-fill"></span>
           <span class="btn-label">See our work</span>
         </a>
@@ -1087,7 +1076,7 @@ html.reduced .reveal{opacity:1;transform:none}
     <h2 class="section-title split-lines">A full-stack studio, <span class="cr">wired</span> for delivery.</h2>
     <p class="section-lead split-lines">Five core capabilities, one integrated team. Every service connects back to the same engineering backbone.</p>
     <div class="services-grid" id="services-grid">
-      <article class="service-card reveal" data-blip>
+      <article class="service-card reveal">
         <span class="card-port"></span>
         <span class="card-num">/01</span>
         <div class="icon">
@@ -1096,7 +1085,7 @@ html.reduced .reveal{opacity:1;transform:none}
         <h3>Custom Software</h3>
         <p>Bespoke platforms and internal tools engineered around your exact workflows — from ERP layers to data-heavy dashboards.</p>
       </article>
-      <article class="service-card reveal" data-blip>
+      <article class="service-card reveal">
         <span class="card-port"></span>
         <span class="card-num">/02</span>
         <div class="icon">
@@ -1105,7 +1094,7 @@ html.reduced .reveal{opacity:1;transform:none}
         <h3>AI Automation</h3>
         <p>LLM agents, intelligent pipelines and decision automation that remove manual work and compound over time.</p>
       </article>
-      <article class="service-card reveal" data-blip>
+      <article class="service-card reveal">
         <span class="card-port"></span>
         <span class="card-num">/03</span>
         <div class="icon">
@@ -1114,7 +1103,7 @@ html.reduced .reveal{opacity:1;transform:none}
         <h3>Mobile Apps</h3>
         <p>Native-quality iOS and Android products — fast, offline-tolerant and polished to the last micro-interaction.</p>
       </article>
-      <article class="service-card reveal" data-blip>
+      <article class="service-card reveal">
         <span class="card-port"></span>
         <span class="card-num">/04</span>
         <div class="icon">
@@ -1123,7 +1112,7 @@ html.reduced .reveal{opacity:1;transform:none}
         <h3>Cloud Platforms</h3>
         <p>Resilient, autoscaling infrastructure on AWS, GCP and Azure — CI/CD, observability and cost discipline built in.</p>
       </article>
-      <article class="service-card reveal" data-blip>
+      <article class="service-card reveal">
         <span class="card-port"></span>
         <span class="card-num">/05</span>
         <div class="icon">
@@ -1132,7 +1121,7 @@ html.reduced .reveal{opacity:1;transform:none}
         <h3>Digital Products</h3>
         <p>End-to-end product design and build — strategy, UX, brand-grade interfaces and the engine room behind them.</p>
       </article>
-      <article class="service-card reveal" data-blip style="background:var(--inverse);border-color:var(--inverse)">
+      <article class="service-card reveal" style="background:var(--inverse);border-color:var(--inverse)">
         <span class="card-port"></span>
         <span class="card-num" style="color:rgba(255,255,255,.4)">/RX</span>
         <div class="icon" style="background:rgba(139,26,26,.25)">
@@ -1298,7 +1287,7 @@ html.reduced .reveal{opacity:1;transform:none}
     <h2 class="section-title split-lines">Products we've <span class="cr">shipped</span>.</h2>
 
     <div class="work-grid">
-      <a href="#contact" class="work-card reveal" data-blip>
+      <a href="#contact" class="work-card reveal">
         <div class="wc-media"><div class="wc-art">
           <svg viewBox="0 0 640 440" preserveAspectRatio="xMidYMid slice">
             <rect width="640" height="440" fill="#141414"/>
@@ -1323,7 +1312,7 @@ html.reduced .reveal{opacity:1;transform:none}
         </div>
         <span class="wc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </a>
-      <a href="#contact" class="work-card reveal" data-blip>
+      <a href="#contact" class="work-card reveal">
         <div class="wc-media"><div class="wc-art">
           <svg viewBox="0 0 640 440" preserveAspectRatio="xMidYMid slice">
             <rect width="640" height="440" fill="#161616"/>
@@ -1350,7 +1339,7 @@ html.reduced .reveal{opacity:1;transform:none}
         </div>
         <span class="wc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </a>
-      <a href="#contact" class="work-card reveal" data-blip>
+      <a href="#contact" class="work-card reveal">
         <div class="wc-media"><div class="wc-art">
           <svg viewBox="0 0 640 440" preserveAspectRatio="xMidYMid slice">
             <rect width="640" height="440" fill="#151515"/>
@@ -1376,7 +1365,7 @@ html.reduced .reveal{opacity:1;transform:none}
         </div>
         <span class="wc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
       </a>
-      <a href="#contact" class="work-card reveal" data-blip>
+      <a href="#contact" class="work-card reveal">
         <div class="wc-media"><div class="wc-art">
           <svg viewBox="0 0 640 440" preserveAspectRatio="xMidYMid slice">
             <rect width="640" height="440" fill="#161616"/>
@@ -1414,7 +1403,7 @@ html.reduced .reveal{opacity:1;transform:none}
     <p class="section-lead split-lines">A small collection of handy utilities. More coming soon.</p>
 
     <div class="tools-grid">
-      <a href="tools/tempmail" class="tool-card reveal" data-blip target="_blank" rel="noopener noreferrer">
+      <a href="tools/tempmail" class="tool-card reveal" target="_blank" rel="noopener noreferrer">
         <div class="tool-top">
           <div class="tool-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
@@ -1428,7 +1417,7 @@ html.reduced .reveal{opacity:1;transform:none}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
         </div>
       </a>
-      <a href="tools/json-formatter" class="tool-card reveal" data-blip target="_blank" rel="noopener noreferrer">
+      <a href="tools/json-formatter" class="tool-card reveal" target="_blank" rel="noopener noreferrer">
         <div class="tool-top">
           <div class="tool-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18 22 12 16 6"/><path d="M8 6 2 12 8 18"/></svg>
@@ -1442,7 +1431,7 @@ html.reduced .reveal{opacity:1;transform:none}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
         </div>
       </a>
-      <a href="tools/invoice/" class="tool-card reveal" data-blip target="_blank" rel="noopener noreferrer">
+      <a href="tools/invoice/" class="tool-card reveal" target="_blank" rel="noopener noreferrer">
         <div class="tool-top">
           <div class="tool-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
@@ -1456,7 +1445,7 @@ html.reduced .reveal{opacity:1;transform:none}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
         </div>
       </a>
-      <div class="tool-card reveal" data-blip>
+      <div class="tool-card reveal">
         <div class="tool-top">
           <div class="tool-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
@@ -1507,31 +1496,31 @@ html.reduced .reveal{opacity:1;transform:none}
     <h2 class="section-title split-lines">Questions, <span class="cr">answered</span>.</h2>
     <div class="faq-list">
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false" data-blip>How much does a typical project cost?
+        <button class="faq-q" aria-expanded="false">How much does a typical project cost?
           <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
         <div class="faq-a"><div><p>Most engagements land between $25k and $150k depending on scope. After a free discovery call, you get a fixed-scope blueprint with a firm number — no hourly meters running in the background.</p></div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false" data-blip>How long does an MVP take?
+        <button class="faq-q" aria-expanded="false">How long does an MVP take?
           <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
         <div class="faq-a"><div><p>A production-ready MVP typically ships in 8–14 weeks. You'll see a working staging build from week two and shippable increments every week after that.</p></div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false" data-blip>Who owns the code and IP?
+        <button class="faq-q" aria-expanded="false">Who owns the code and IP?
           <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
         <div class="faq-a"><div><p>You do — fully and from day one. Everything lives in repositories you control, with documentation and handover baked into the process, not sold as an add-on.</p></div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false" data-blip>Do you work with existing in-house teams?
+        <button class="faq-q" aria-expanded="false">Do you work with existing in-house teams?
           <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
         <div class="faq-a"><div><p>Constantly. We can lead delivery end-to-end or embed alongside your engineers — shared standups, shared code review, shared standards. We adapt to your workflow, not the other way around.</p></div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false" data-blip>What happens after launch?
+        <button class="faq-q" aria-expanded="false">What happens after launch?
           <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         </button>
         <div class="faq-a"><div><p>Every launch includes a stabilization window, monitoring and a handover plan. Most clients continue with a monthly Run &amp; Evolve retainer — performance budgets, feature velocity and a quarterly technical roadmap.</p></div></div>
@@ -1590,13 +1579,13 @@ html.reduced .reveal{opacity:1;transform:none}
     <h2 class="contact-head">Ready to run<br>your next <em style="font-style:normal">execution</em>?</h2>
     <p class="contact-sub">Tell us what you're building. We'll reply within one business day with a point of view — not a sales script.</p>
     <div class="contact-ctas">
-      <a href="mailto:info@runexe.tech" class="btn btn--crimson" data-magnetic data-blip>
+      <a href="mailto:info@runexe.tech" class="btn btn--crimson" data-magnetic>
         <span class="btn-fill"></span>
         <span class="btn-label">Send us a brief
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         </span>
       </a>
-      <a href="tel:+919326809409" class="btn btn--light" data-magnetic data-blip>
+      <a href="tel:+919326809409" class="btn btn--light" data-magnetic>
         <span class="btn-fill"></span>
         <span class="btn-label">Book a call</span>
       </a>
@@ -1691,34 +1680,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 /* ============================================================
-   2. Sound layer (off by default)
-   ============================================================ */
-const soundBtn = document.getElementById('sound-toggle');
-let audioCtx = null, soundOn = false;
-function blip(freq = 1200, dur = 0.06, gain = 0.035) {
-  if (!soundOn) return;
-  try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = 'sine'; o.frequency.value = freq;
-    g.gain.setValueAtTime(gain, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.stop(audioCtx.currentTime + dur);
-  } catch (e) {}
-}
-soundBtn.addEventListener('click', () => {
-  soundOn = !soundOn;
-  soundBtn.classList.toggle('muted', !soundOn);
-  soundBtn.setAttribute('aria-pressed', String(soundOn));
-  if (soundOn) blip(1400, .09, .05);
-});
-document.querySelectorAll('[data-blip]').forEach(el => {
-  el.addEventListener('mouseenter', () => blip(1150, .05, .025));
-  el.addEventListener('click', () => blip(760, .08, .04));
-});
-
-/* ============================================================
    2b. Theme — follow system, override via toggle
    ============================================================ */
 const THEME_KEY = 'runexe-theme';
@@ -1748,7 +1709,6 @@ if (themeBtn) {
   themeBtn.addEventListener('click', () => {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     applyTheme(next, true);
-    blip(next === 'dark' ? 880 : 1400, .07, .03);
   });
 }
 const onSysTheme = (e) => {
@@ -2535,7 +2495,7 @@ if (!prefersReduced) {
   steps.forEach(step => {
     ScrollTrigger.create({
       trigger: step, start: 'top 62%',
-      onEnter(){ step.classList.add('active'); blip(1500, .05, .02); },
+      onEnter(){ step.classList.add('active'); },
       onLeaveBack(){ step.classList.remove('active'); }
     });
     gsap.from(step, {
@@ -2692,9 +2652,6 @@ document.querySelectorAll('.faq-item').forEach(item => {
     if (!wasOpen) {
       item.classList.add('open');
       q.setAttribute('aria-expanded', 'true');
-      blip(1350, .06, .03);
-    } else {
-      blip(880, .06, .03);
     }
     // heights change — keep pinned/scrubbed sections in sync
     setTimeout(() => ScrollTrigger.refresh(), 600);

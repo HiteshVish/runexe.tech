@@ -1,0 +1,129 @@
+/* Shared atmosphere. Values match the home page so every route feels like one site. */
+:root{
+  color-scheme:light;
+  --bg:#FAFAFA;--bg-2:#FFFFFF;--crimson:#8B1A1A;--ink:#111111;
+  --ink-60:rgba(17,17,17,.6);--ink-40:rgba(17,17,17,.4);
+  --line:rgba(17,17,17,.08);--inverse:#111111;--on-inverse:#ffffff;
+  --nav-scrolled:rgba(250,250,250,.82);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --font-head:'Sora',sans-serif;--font-body:'Inter',sans-serif;
+  --c-grid:rgba(17,17,17,.045);--c-node:rgba(17,17,17,.06);
+  --c-trace:rgba(17,17,17,.07);--c-trace-cr:rgba(139,26,26,.10);
+  --c-node-ink:rgba(17,17,17,.10);--c-node-cr:rgba(139,26,26,.16);
+  --c-link:rgba(17,17,17,.05);--c-particle:rgba(17,17,17,.14);
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0B0B0B;--bg-2:#161616;--crimson:#D45C5C;
+  --ink:#F3F1EE;--ink-60:rgba(243,241,238,.62);--ink-40:rgba(243,241,238,.42);
+  --line:rgba(255,255,255,.10);--inverse:#1C1C1C;--on-inverse:#ffffff;
+  --nav-scrolled:rgba(11,11,11,.82);
+  --c-grid:rgba(243,241,238,.05);--c-node:rgba(243,241,238,.08);
+  --c-trace:rgba(243,241,238,.08);--c-trace-cr:rgba(212,92,92,.18);
+  --c-node-ink:rgba(243,241,238,.12);--c-node-cr:rgba(212,92,92,.28);
+  --c-link:rgba(243,241,238,.06);--c-particle:rgba(243,241,238,.16);
+}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body.custom-cursor-on, body.custom-cursor-on a, body.custom-cursor-on button{cursor:none}
+
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+#cursor-canvas{position:fixed;inset:0;z-index:999;pointer-events:none;display:none}
+body.custom-cursor-on #cursor-canvas{display:block}
+#cursor-dot{
+  position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;
+  background:var(--crimson);z-index:999;pointer-events:none;display:none;
+  transform:translate(-50%,-50%);opacity:0;will-change:transform;
+  transition:width .25s var(--ease),height .25s var(--ease),background .25s,opacity .2s;
+}
+body.custom-cursor-on #cursor-dot{display:block}
+#cursor-dot.is-visible{opacity:1}
+#cursor-dot.is-hover{width:26px;height:26px;background:transparent;border:1.5px solid var(--crimson)}
+#cursor-dot.is-down{width:7px;height:7px}
+#cursor-dot.is-hover.is-down{width:20px;height:20px}
+
+#scroll-signal{
+  position:fixed;top:0;right:0;width:2px;height:100vh;z-index:90;
+  background:var(--line);pointer-events:none;
+}
+#scroll-signal .fill{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:linear-gradient(to bottom,var(--crimson),#c33);
+  transform-origin:top;transform:scaleY(0);
+}
+#scroll-signal .pulse{
+  position:absolute;left:50%;width:8px;height:8px;border-radius:50%;
+  background:var(--crimson);transform:translate(-50%,-50%);
+  box-shadow:0 0 12px 2px rgba(139,26,26,.55);
+}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px clamp(20px,4vw,56px);
+  transition:background .4s,box-shadow .4s,padding .4s;
+}
+.nav.scrolled{
+  background:var(--nav-scrolled);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 1px 0 var(--line);
+  padding-top:12px;padding-bottom:12px;
+}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo img{height:46px;width:auto;object-fit:contain}
+.nav .logo-dark{display:none}
+html[data-theme="dark"] .nav .logo-light{display:none}
+html[data-theme="dark"] .nav .logo-dark{display:block}
+.nav-links{display:flex;align-items:center;gap:clamp(16px,2.5vw,34px);list-style:none;margin:0;padding:0}
+.nav-links a{
+  position:relative;font-size:.82rem;font-weight:500;color:var(--ink-60);
+  padding:4px 0;text-decoration:none;transition:color .3s;
+}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:0;height:1.5px;width:100%;
+  background:var(--crimson);transform:scaleX(0);transform-origin:right;
+  transition:transform .45s var(--ease);
+}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav .icon-btn{
+  width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
+  background:transparent;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-60);transition:border-color .3s,color .3s;padding:0;
+}
+.nav .icon-btn:hover{border-color:var(--crimson);color:var(--crimson)}
+.nav .icon-btn svg{width:16px;height:16px}
+#theme-toggle .icon-sun{display:none}
+html[data-theme="dark"] #theme-toggle .icon-moon{display:none}
+html[data-theme="dark"] #theme-toggle .icon-sun{display:block}
+.nav .btn{
+  position:relative;display:inline-flex;align-items:center;gap:10px;
+  padding:12px 26px;border-radius:999px;overflow:hidden;text-decoration:none;
+  font-family:var(--font-head);font-weight:600;font-size:.8rem;
+  border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);
+}
+.nav .btn .btn-fill{
+  position:absolute;inset:0;background:var(--crimson);border-radius:inherit;
+  transform:translateX(-101%);transition:transform .5s var(--ease);
+}
+.nav .btn .btn-label{position:relative;z-index:1}
+.nav .btn:hover{color:var(--on-inverse);border-color:var(--crimson)}
+.nav .btn:hover .btn-fill{transform:translateX(0)}
+
+/* Tool pages sit above the circuit and clear the fixed header.
+   Their own top bars are replaced by the shared nav. */
+.tool-page{position:relative;z-index:2;min-height:100vh;padding-top:88px;background:transparent}
+.tool-page > .bar{display:none}
+
+@media (max-width:680px){
+  .nav-links{display:none}
+  .nav-logo img{height:38px}
+}
