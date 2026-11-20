@@ -1,0 +1,46 @@
+# RunExe Technology
+
+> RunExe Technology is a software engineering studio that builds custom software, AI automation, mobile apps, cloud platforms and digital products for clients worldwide. The website also offers seven free online tools for developers and businesses, five of which run entirely in the browser.
+
+Website: https://runexe.tech
+Contact: info@runexe.tech, +91 93268 09409
+Start a project: https://runexe.tech/#contact
+Projects: https://runexe.tech/projects
+Tools: https://runexe.tech/tools
+
+## Services
+
+- Custom Software: bespoke platforms and internal tools built around a client's workflows, from ERP layers to data-heavy dashboards.
+- AI Automation: LLM agents, intelligent pipelines and decision automation that remove manual work.
+- Mobile Apps: iOS and Android products.
+- Cloud Platforms: infrastructure on AWS, GCP and Azure with CI/CD and observability.
+- Digital Products: end-to-end product design and build, from strategy and UX to engineering.
+
+## Projects
+
+- [LifeCare Diagnostics](https://lifecarediagnostics.com/): website for an NABL-accredited diagnostics lab in Mumbai, India, with health packages, test listings and online appointment booking.
+- [VRC Club](https://vrchk.vkinternationallimited.com/): membership website for Victoria Recreation Club in Hong Kong, covering two clubhouses, events, courses and the club shop.
+- [VK SmartTech](https://vk.runexe.tech/): onboarding platform in Hong Kong for company registration and opening business and personal accounts online.
+- DDFC Loan App: lending app for DDFC.
+
+## Free tools
+
+- [Invoice Generator](https://runexe.tech/tools/invoice): build invoices with no tax, VAT/other tax, India GST (CGST/SGST or IGST) or India export; 10 currencies, 4 templates, live preview and PDF download. Invoice data is not stored on the server.
+- [Temporary Email Generator](https://runexe.tech/tools/tempmail): create a disposable inbox for testing sign-ups and email flows. No signup.
+- [JSON Formatter & Validator](https://runexe.tech/tools/json-formatter): format, minify and validate JSON in the browser. Input is not uploaded.
+- [Base64 Encoder & Decoder](https://runexe.tech/tools/base64): encode or decode Base64 with UTF-8 and URL-safe (Base64URL) support, or turn a file into Base64. Runs in the browser.
+- [JWT Decoder](https://runexe.tech/tools/jwt-decoder): read a JSON Web Token's header and payload, with exp, iat and nbf shown as dates. Decodes only; it does not verify signatures. Runs in the browser.
+- [UUID Generator](https://runexe.tech/tools/uuid-generator): generate random version 4 UUIDs, up to 1,000 at a time, using the browser's cryptographic random number generator.
+- [Hash Generator](https://runexe.tech/tools/hash-generator): SHA-1, SHA-256, SHA-384 and SHA-512 hashes of text or a file, using the Web Crypto API in the browser.
+
+## Working with RunExe
+
+- Pricing: most engagements land between $25k and $150k depending on scope, with a fixed-scope blueprint after a free discovery call.
+- Timeline: a production-ready MVP typically ships in 8 to 14 weeks.
+- Ownership: the client owns the code and IP from day one.
+- Teams: RunExe can lead delivery end-to-end or embed alongside in-house engineers.
+
+## Profiles
+
+- Instagram: https://www.instagram.com/runexe.tech/
+- Facebook: https://www.facebook.com/profile.php?id=61576570486275

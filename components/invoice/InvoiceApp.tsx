@@ -10,6 +10,10 @@ type InvoiceAppProps = {
   country: string | null;
 };
 
+// Constant markup, so the server and client render the same HTML and the
+// form headings are readable before any script runs.
+const markup = { __html: invoiceBody };
+
 export default function InvoiceApp({ gstLookup, country }: InvoiceAppProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -20,14 +24,21 @@ export default function InvoiceApp({ gstLookup, country }: InvoiceAppProps) {
     (window as unknown as { INVOICE_CONFIG?: { gstLookup: boolean; country: string | null } }).INVOICE_CONFIG =
       { gstLookup, country };
 
-    root.innerHTML = invoiceBody;
     const cleanup = initInvoiceApp();
 
     return () => {
       cleanup();
-      root.innerHTML = "";
+      // The script rewrites parts of the DOM; restore it so a re-mount starts clean.
+      root.innerHTML = invoiceBody;
     };
   }, [gstLookup, country]);
 
-  return <div ref={rootRef} className="tool-page" suppressHydrationWarning />;
+  return (
+    <div
+      ref={rootRef}
+      className="tool-page"
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={markup}
+    />
+  );
 }

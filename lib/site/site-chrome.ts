@@ -50,7 +50,7 @@ export function initSiteChrome(): () => void {
       const target = document.querySelector(hash);
       if (!target) return;
       e.preventDefault();
-      if (lenis) lenis.scrollTo(target, { offset: -70, duration: 1.4 });
+      if (lenis) lenis.scrollTo(target, { offset: -70, duration: 1.4, force: true });
       else target.scrollIntoView({ behavior: "smooth" });
     },
     sig

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import "@/styles/json-formatter.css";
+import DevToolHeader, { copyText } from "@/components/tools/DevToolHeader";
 
 export default function JsonFormatterApp() {
   const [src, setSrc] = useState('{ "hello": "runexe" }');
@@ -20,67 +20,75 @@ export default function JsonFormatterApp() {
   }
 
   return (
-    <div className="json-fmt-page tool-page">
-      <div className="wrap">
-        <div style={{ fontSize: ".68rem", fontWeight: 600, letterSpacing: ".35em", textTransform: "uppercase", color: "var(--crimson)" }}>
-          Open source
-        </div>
-        <h1>JSON Formatter</h1>
-        <p className="lead">Paste JSON, then format, minify, or validate. Everything stays in this tab — nothing is uploaded.</p>
-        <div className="actions">
-          <button
-            className="primary"
-            type="button"
-            onClick={() => {
-              const r = parse();
-              if (!r.ok) return set(false, r.err);
-              setSrc(JSON.stringify(r.data, null, 2));
-              set(true, "Formatted.");
-            }}
-          >
-            Format
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const r = parse();
-              if (!r.ok) return set(false, r.err);
-              setSrc(JSON.stringify(r.data));
-              set(true, "Minified.");
-            }}
-          >
-            Minify
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const r = parse();
-              set(r.ok, r.ok ? "Valid JSON." : r.err);
-            }}
-          >
-            Validate
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              navigator.clipboard.writeText(src).then(() => set(true, "Copied."));
-            }}
-          >
-            Copy
-          </button>
-          <button type="button" onClick={() => { setSrc(""); setStatus({ msg: "" }); }}>
-            Clear
-          </button>
-        </div>
-        <textarea
-          id="src"
-          spellCheck={false}
-          placeholder='{ "hello": "runexe" }'
-          value={src}
-          onChange={(e) => setSrc(e.target.value)}
+    <div className="dt-page tool-page">
+      <div className="dt-wrap">
+        <DevToolHeader
+          title="JSON Formatter & Validator"
+          lead="Paste JSON, then format, minify, or validate. Everything stays in this tab — nothing is uploaded."
         />
-        <div className={`status ${status.msg ? (status.ok ? "ok" : "err") : ""}`} id="st">
-          {status.msg}
+        <div className="dt-panel">
+          <div className="dt-toolbar">
+            <button
+              className="dt-btn primary"
+              type="button"
+              onClick={() => {
+                const r = parse();
+                if (!r.ok) return set(false, r.err);
+                setSrc(JSON.stringify(r.data, null, 2));
+                set(true, "Formatted.");
+              }}
+            >
+              Format
+            </button>
+            <button
+              className="dt-btn"
+              type="button"
+              onClick={() => {
+                const r = parse();
+                if (!r.ok) return set(false, r.err);
+                setSrc(JSON.stringify(r.data));
+                set(true, "Minified.");
+              }}
+            >
+              Minify
+            </button>
+            <button
+              className="dt-btn"
+              type="button"
+              onClick={() => {
+                const r = parse();
+                set(r.ok, r.ok ? "Valid JSON." : r.err);
+              }}
+            >
+              Validate
+            </button>
+            <span className="dt-spacer" />
+            <button
+              className="dt-btn"
+              type="button"
+              onClick={async () => {
+                const ok = await copyText(src);
+                set(ok, ok ? "Copied." : "Copy failed — select the text and copy manually.");
+              }}
+            >
+              Copy
+            </button>
+            <button className="dt-btn" type="button" onClick={() => { setSrc(""); setStatus({ msg: "" }); }}>
+              Clear
+            </button>
+          </div>
+          <textarea
+            id="src"
+            className="dt-textarea tall"
+            aria-label="JSON input"
+            spellCheck={false}
+            placeholder='{ "hello": "runexe" }'
+            value={src}
+            onChange={(e) => setSrc(e.target.value)}
+          />
+          <div className={`dt-status ${status.msg ? (status.ok ? "ok" : "err") : ""}`} id="st" role="status" aria-live="polite">
+            {status.msg}
+          </div>
         </div>
       </div>
     </div>

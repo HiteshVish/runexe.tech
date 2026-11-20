@@ -30,8 +30,8 @@ export function parseFormData(formData: FormData): {
   const files: ParsedFiles = {};
 
   for (const [key, value] of formData.entries()) {
-    // Handle files
-    if (value instanceof File) {
+    // Handle files. Node 18 has no global File, so check the shape instead of instanceof.
+    if (typeof value !== 'string') {
       // Skip if no file selected
       if (value.size === 0 && value.name === '') {
         continue;
@@ -122,7 +122,7 @@ export async function parseInvoiceFormData(request: Request): Promise<{
   // Read file contents
   for (const [key, fileInfo] of Object.entries(files)) {
     const file = formData.get(key);
-    if (file instanceof File) {
+    if (file && typeof file !== 'string') {
       const buffer = await file.arrayBuffer();
       files[key].data = buffer;
     }
@@ -139,7 +139,7 @@ export async function prepareInvoiceFiles(formData: FormData): Promise<ParsedFil
   const files: ParsedFiles = {};
 
   for (const [key, value] of formData.entries()) {
-    if (value instanceof File && value.size > 0) {
+    if (typeof value !== 'string' && value.size > 0) {
       const buffer = await value.arrayBuffer();
       files[key] = {
         data: buffer,

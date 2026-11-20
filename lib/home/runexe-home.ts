@@ -1,7 +1,6 @@
 // @ts-nocheck — faithful port of legacy inline script
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as THREE from 'three';
 import { getLenis, rewireBackground } from '@/lib/site/site-chrome';
 
 export function initRunexeHome(): () => void {
@@ -30,7 +29,6 @@ let disposed = false;
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = window.matchMedia('(max-width: 768px)').matches || ('ontouchstart' in window && window.innerWidth < 1024);
 const LITE = prefersReduced || isMobile;   // lighter animation path
-const CRIMSON = '#8B1A1A';
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.defaults({ ease: 'power3.out' });
@@ -68,6 +66,7 @@ document.querySelectorAll('#hero-title .seg').forEach(seg => {
   const text = seg.dataset.text;
   const cls = seg.classList.contains('cr') ? ' cr' : '';
   seg.innerHTML = text.split('').map(c => `<span class="ch${cls}">${c}</span>`).join('');
+  seg.setAttribute('aria-hidden', 'true');
 });
 // Section titles / leads: split into words
 document.querySelectorAll('.split-lines').forEach(el => {
@@ -160,161 +159,6 @@ if (prefersReduced) {
        .to(pre, { yPercent: -100, duration: .7, ease: 'power4.inOut', delay: .15,
             onStart: heroIntro });
 }
-
-/* ============================================================
-   9. Hero Three.js — RX node network responding to mouse
-   ============================================================ */
-(function initHero3D(){
-  const canvas = document.getElementById('hero-webgl');
-  // The banner no longer uses the node network. Keep the setup for a canvas if one is present.
-  if (!canvas || LITE) { if (canvas) canvas.style.display = 'none'; drawHeroFallback(); return; }
-
-  const holder = canvas.parentElement;
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  } catch (e) {
-    // WebGL unavailable: the rest of the hero still works without the network
-    canvas.style.display = 'none'; drawHeroFallback(); return;
-  }
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 100);
-  camera.position.z = 12;
-
-  function resize3d() {
-    const w = holder.clientWidth, h = holder.clientHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
-  resize3d(); addEventListener('resize', resize3d, sig);
-
-  const group = new THREE.Group();
-  scene.add(group);
-
-  // Node positions: letter "R" and "X" point clouds + ambient shell
-  const pts = [];
-  // R strokes
-  const R = [
-    // vertical spine
-    ...Array.from({length: 9}, (_, i) => [-3.4, -3 + i * 0.75, 0]),
-    // bowl
-    [-3.4, 3], [-2.4, 3.1], [-1.6, 2.7], [-1.3, 1.9], [-1.6, 1.1], [-2.4, 0.7], [-3.4, 0.6],
-    // leg
-    [-2.6, 0.3], [-2.0, -0.6], [-1.4, -1.5], [-0.8, -2.4], [-0.4, -3]
-  ].map(p => [p[0], p[1], p[2] || 0]);
-  // X strokes
-  const X = [];
-  for (let i = 0; i <= 8; i++) {
-    const t = i / 8;
-    X.push([0.6 + t * 3.0, 2.6 - t * 5.4, 0]);
-    X.push([3.6 - t * 3.0, 2.6 - t * 5.4, 0]);
-  }
-  pts.push(...R, ...X);
-  // depth jitter + ambient shell
-  const nodes = pts.map(p => new THREE.Vector3(p[0], p[1], (Math.random() - .5) * 1.6));
-  for (let i = 0; i < 26; i++) {
-    nodes.push(new THREE.Vector3(
-      (Math.random() - .5) * 11, (Math.random() - .5) * 9, (Math.random() - .5) * 6
-    ));
-  }
-
-  // points
-  const pGeo = new THREE.BufferGeometry().setFromPoints(nodes);
-  const sprite = (() => {
-    const c = document.createElement('canvas'); c.width = c.height = 64;
-    const x = c.getContext('2d');
-    const g = x.createRadialGradient(32, 32, 0, 32, 32, 30);
-    g.addColorStop(0, 'rgba(139,26,26,1)');
-    g.addColorStop(0.5, 'rgba(139,26,26,.55)');
-    g.addColorStop(1, 'rgba(139,26,26,0)');
-    x.fillStyle = g; x.beginPath(); x.arc(32, 32, 30, 0, 7); x.fill();
-    return new THREE.CanvasTexture(c);
-  })();
-  const pMat = new THREE.PointsMaterial({
-    size: 0.34, map: sprite, transparent: true, depthWrite: false,
-    color: new THREE.Color(CRIMSON), sizeAttenuation: true
-  });
-  group.add(new THREE.Points(pGeo, pMat));
-
-  // connecting lines between near nodes
-  const linePos = [];
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      if (nodes[i].distanceTo(nodes[j]) < 1.7) {
-        linePos.push(nodes[i].x, nodes[i].y, nodes[i].z, nodes[j].x, nodes[j].y, nodes[j].z);
-      }
-    }
-  }
-  const lGeo = new THREE.BufferGeometry();
-  lGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
-  const lMat = new THREE.LineBasicMaterial({ color: 0x8B1A1A, transparent: true, opacity: 0.22 });
-  group.add(new THREE.LineSegments(lGeo, lMat));
-
-  // dark accent lines (ink)
-  const lMat2 = new THREE.LineBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.10 });
-  const lGeo2 = new THREE.BufferGeometry();
-  const linePos2 = [];
-  for (let i = 0; i < nodes.length; i += 3) {
-    const j = (i + 11) % nodes.length;
-    if (nodes[i].distanceTo(nodes[j]) < 5) {
-      linePos2.push(nodes[i].x, nodes[i].y, nodes[i].z, nodes[j].x, nodes[j].y, nodes[j].z);
-    }
-  }
-  lGeo2.setAttribute('position', new THREE.Float32BufferAttribute(linePos2, 3));
-  group.add(new THREE.LineSegments(lGeo2, lMat2));
-
-  function sync3dTheme() {
-    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-    lMat2.color.set(dark ? 0xf3f1ee : 0x111111);
-    lMat2.opacity = dark ? 0.14 : 0.10;
-  }
-  sync3dTheme();
-  document.documentElement.addEventListener('themechange', sync3dTheme, sig);
-
-  const target = { x: 0, y: 0 };
-  addEventListener('mousemove', (e) => {
-    target.x = (e.clientX / innerWidth - 0.5) * 0.65;
-    target.y = (e.clientY / innerHeight - 0.5) * 0.5;
-  }, { passive: true, signal: ac.signal });
-
-  // Only render while the hero is actually on screen
-  let heroInView = true;
-  const heroIO = new IntersectionObserver((entries) => {
-    heroInView = entries[entries.length - 1].isIntersecting;
-  });
-  heroIO.observe(holder);
-
-  disposers.push(() => {
-    heroIO.disconnect();
-    pGeo.dispose(); lGeo.dispose(); lGeo2.dispose();
-    pMat.dispose(); lMat.dispose(); lMat2.dispose();
-    sprite.dispose();
-    renderer.dispose();
-    renderer.forceContextLoss();
-  });
-
-  let scrollRot = 0;
-  ScrollTrigger.create({
-    trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true,
-    onUpdate(self){ scrollRot = self.progress * 0.9; }
-  });
-
-  addTicker((t) => {
-    if (!heroInView || document.hidden) return;
-    // smooth lerp toward mouse, plus idle drift and scroll rotation
-    group.rotation.y += ((target.x + Math.sin(t * 0.25) * 0.08 + scrollRot) - group.rotation.y) * 0.045;
-    group.rotation.x += ((target.y + Math.cos(t * 0.2) * 0.05) - group.rotation.x) * 0.045;
-    group.position.y = Math.sin(t * 0.6) * 0.18;
-    renderer.render(scene, camera);
-  });
-
-  function drawHeroFallback(){}
-})();
-
-// Static SVG fallback for lite mode
-function drawHeroFallback() {}
 
 /* ============================================================
    9b. Hero terminal — typed "runexe" deploy sequence (loops)
@@ -696,21 +540,6 @@ if (!prefersReduced) {
       });
     });
   }
-})();
-
-/* ============================================================
-   16. Footer divider — live signal draw
-   ============================================================ */
-(function initFooter(){
-  const live = document.getElementById('fd-live');
-  const L = live.getTotalLength();
-  live.style.strokeDasharray = `${L * 0.12} ${L * 0.88}`;
-  live.style.strokeDashoffset = L;
-  if (prefersReduced) { live.style.display = 'none'; return; }
-  gsap.to(live, {
-    strokeDashoffset: -L, duration: 7, repeat: -1, ease: 'none',
-    scrollTrigger: { trigger: 'footer', start: 'top bottom', toggleActions: 'play pause resume pause' }
-  });
 })();
 
 /* ============================================================

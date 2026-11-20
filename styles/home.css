@@ -30,8 +30,8 @@
   --c-link:rgba(17,17,17,.05);
   --c-particle:rgba(17,17,17,.14);
   --ease:cubic-bezier(.22,1,.36,1);
-  --font-head:'Sora',sans-serif;
-  --font-body:'Inter',sans-serif;
+  --font-head:var(--font-sora),'Sora',sans-serif;
+  --font-body:var(--font-inter),'Inter',sans-serif;
 }
 html[data-theme="dark"]{
   color-scheme:dark;
@@ -141,40 +141,10 @@ body.custom-cursor-on #cursor-dot{display:block}
   box-shadow:0 0 12px 2px rgba(139,26,26,.55);
 }
 
-/* ---------- Nav ---------- */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px clamp(20px,4vw,56px);
-  transition:background .4s,box-shadow .4s,padding .4s;
-}
-.nav.scrolled{
-  background:var(--nav-scrolled);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  box-shadow:0 1px 0 var(--line);
-  padding-top:12px;padding-bottom:12px;
-}
-.nav-logo{display:flex;align-items:center;gap:12px}
-.nav-logo img{height:46px;width:auto;object-fit:contain;mix-blend-mode:var(--logo-blend);filter:var(--logo-filter)}
+/* Header and footer styles live in site-chrome.css so every page shares them. */
 .logo-dark{display:none}
 html[data-theme="dark"] .logo-light{display:none}
 html[data-theme="dark"] .logo-dark{display:block}
-.nav-logo .nl-text{font-family:var(--font-head);font-weight:800;font-size:1.05rem;letter-spacing:-.02em;line-height:1}
-.nav-logo .nl-text .cr{color:var(--crimson)}
-.nav-logo .nl-sub{display:block;font-family:var(--font-body);font-weight:600;font-size:.42rem;letter-spacing:.5em;text-transform:uppercase;color:var(--ink-60);margin-top:3px}
-.nav-links{display:flex;align-items:center;gap:clamp(16px,2.5vw,34px);list-style:none}
-.nav-links a{
-  position:relative;font-size:.82rem;font-weight:500;color:var(--ink-60);
-  padding:4px 0;transition:color .3s;
-}
-.nav-links a::after{
-  content:'';position:absolute;left:0;bottom:0;height:1.5px;width:100%;
-  background:var(--crimson);transform:scaleX(0);transform-origin:right;
-  transition:transform .45s var(--ease);
-}
-.nav-links a:hover{color:var(--ink)}
-.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
-.nav-right{display:flex;align-items:center;gap:14px}
 .icon-btn{
   width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
   background:transparent;display:flex;align-items:center;justify-content:center;
@@ -700,6 +670,13 @@ html[data-theme="dark"] #hero{
 }
 .work-card:hover .wc-media .wc-art{transform:scale(1.07)}
 .work-card .wc-art svg{width:100%;height:100%}
+.work-card .wc-shot img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.work-card:has(.wc-shot) .wc-overlay{
+  background:linear-gradient(to top,rgba(10,10,10,.97) 0%,rgba(10,10,10,.9) 34%,rgba(10,10,10,.35) 64%,rgba(10,10,10,0) 82%);
+}
+.work-card .wc-url{
+  margin-top:10px;font-size:.72rem;font-weight:500;letter-spacing:.06em;color:rgba(255,255,255,.55);
+}
 .work-card .wc-overlay{
   position:absolute;inset:0;z-index:2;padding:30px;
   display:flex;flex-direction:column;justify-content:flex-end;
@@ -745,12 +722,41 @@ a.tool-card{color:inherit}
   display:flex;align-items:center;justify-content:center;color:var(--crimson);
 }
 .tool-card .tool-icon svg{width:20px;height:20px}
-.tool-status{
-  font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--crimson);border:1px solid rgba(139,26,26,.22);padding:5px 10px;border-radius:6px;
+.tool-run{
+  flex-shrink:0;display:inline-flex;align-items:center;gap:7px;font-size:.66rem;font-weight:600;letter-spacing:.04em;
+  color:var(--ink-60);border:1px solid var(--line);padding:5px 10px;border-radius:999px;white-space:nowrap;
 }
-.tool-card h3{font-size:1.2rem;font-weight:700}
-.tool-card p{color:var(--ink-60);font-size:.92rem;flex:1}
+.tool-run::before{content:"";width:6px;height:6px;border-radius:50%;background:#2f9e44;box-shadow:0 0 0 3px rgba(47,158,68,.18)}
+.tool-run--server::before{background:#e8a33d;box-shadow:0 0 0 3px rgba(232,163,61,.2)}
+.tool-cat{font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--crimson);margin-top:4px}
+.tool-card h3{font-size:1.15rem;font-weight:700;margin-top:-6px}
+.tool-card p{color:var(--ink-60);font-size:.9rem;flex:1}
+.tool-tags{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0}
+.tool-tags li{font-size:.7rem;font-weight:600;padding:5px 10px;border-radius:7px;border:1px solid var(--line);color:var(--ink-60)}
+.tool-card--feature{
+  grid-column:span 2;grid-row:span 2;padding:40px 36px 32px;overflow:hidden;
+  background:
+    radial-gradient(120% 90% at 100% 0%,var(--crimson-soft),transparent 60%),
+    var(--bg);
+}
+.tool-card--feature::after{
+  content:"";position:absolute;right:-60px;bottom:-60px;width:240px;height:240px;border-radius:50%;
+  border:1px dashed rgba(139,26,26,.28);pointer-events:none;transition:transform .8s var(--ease);
+}
+.tool-card--feature:hover::after{transform:rotate(60deg) scale(1.06)}
+.tool-card--feature .tool-icon{width:56px;height:56px;border-radius:15px}
+.tool-card--feature .tool-icon svg{width:26px;height:26px}
+.tool-card--feature h3{font-size:clamp(1.6rem,2.6vw,2.2rem);margin-top:0}
+.tool-card--feature p{font-size:1rem;max-width:460px}
+.tool-card--custom{
+  grid-column:span 2;min-height:0;border-style:dashed;background:transparent;
+}
+.tool-card--custom h3{margin-top:0}
+.tool-card--custom:hover{background:var(--bg)}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px 40px;flex-wrap:wrap}
+.section-head .section-title{margin-bottom:0}
+.section-head .section-lead{margin-top:20px}
+.section-head > .btn{flex-shrink:0}
 .tool-meta{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding-top:14px;border-top:1px solid var(--line);
@@ -810,28 +816,6 @@ a.cm-item:hover{color:#fff}
 .btn--crimson{background:var(--crimson);border-color:var(--crimson);color:#fff}
 .btn--crimson .btn-fill{background:#fff}
 .btn--crimson:hover{color:var(--crimson);border-color:#fff}
-
-/* ---------- Footer ---------- */
-footer{position:relative;z-index:2;padding:0 clamp(20px,6vw,90px) 40px}
-.footer-divider{width:100%;height:60px;display:block;overflow:visible}
-.footer-divider path{fill:none;stroke:var(--line);stroke-width:1.5}
-.footer-divider .fd-live{stroke:var(--crimson);opacity:.85}
-.footer-divider circle{fill:var(--bg-2);stroke:var(--crimson);stroke-width:1.5}
-.footer-inner{
-  max-width:1240px;margin:0 auto;display:flex;flex-wrap:wrap;gap:26px;
-  align-items:center;justify-content:space-between;padding-top:26px;
-}
-.footer-links{display:flex;gap:26px;flex-wrap:wrap}
-.footer-links a{
-  position:relative;font-size:.82rem;color:var(--ink-60);padding-bottom:3px;transition:color .3s;
-}
-.footer-links a::after{
-  content:'';position:absolute;left:0;bottom:0;width:100%;height:1.5px;background:var(--crimson);
-  transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ease);
-}
-.footer-links a:hover{color:var(--ink)}
-.footer-links a:hover::after{transform:scaleX(1);transform-origin:left}
-.footer-copy{font-size:.75rem;color:var(--ink-40)}
 
 /* ---------- Availability pill ---------- */
 .avail-pill{
@@ -987,17 +971,21 @@ html.reduced .reveal{opacity:1;transform:none}
   .process-visual{display:none}
   .blog-grid{grid-template-columns:repeat(2,1fr)}
   .tools-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tool-card--feature{grid-row:auto}
   .section.panel{position:relative;top:auto;padding:clamp(48px,8vh,90px) 0}
 }
 @media (max-width:680px){
-  .nav-links{display:none}
-  .nav-logo img{height:38px}
+  .hero-kicker{font-size:.62rem;letter-spacing:.18em;gap:10px;white-space:nowrap}
+  .hero-kicker i{width:28px}
   .services-grid{grid-template-columns:1fr}
   .work-grid{grid-template-columns:1fr}
-  .tools-grid{gap:12px;margin-top:36px}
-  .tool-card{padding:20px 16px 16px;min-height:0;gap:10px}
-  .tool-card h3{font-size:.95rem}
-  .tool-card p{font-size:.78rem}
+  .tools-grid{grid-template-columns:1fr;gap:14px;margin-top:36px}
+  .tool-card,.tool-card--feature,.tool-card--custom{grid-column:auto;padding:24px 22px 20px;min-height:0;gap:12px}
+  .tool-card--feature h3{font-size:1.5rem}
+  .tool-card--feature p{font-size:.92rem}
+  .tool-card--feature::after{width:160px;height:160px;right:-50px;bottom:-50px}
+  .tool-card .tool-icon{flex-shrink:0}
+  .section-head > .btn{width:100%;justify-content:center}
   .hero-desc::after{display:none}
   #scroll-signal{display:none}
   .blog-grid{grid-template-columns:1fr}
