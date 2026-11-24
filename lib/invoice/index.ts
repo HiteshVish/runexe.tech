@@ -9,6 +9,8 @@ export { buildInvoice, TEMPLATES } from './invoice-build';
 export type {
   InvoiceData,
   InvoiceBuildResult,
+  InvoiceIssue,
+  InvoiceIssueSection,
   Party,
   InvoiceItem,
   TaxLine,

@@ -120,9 +120,19 @@ export interface InvoiceData {
   signature: string | null;
 }
 
+export type InvoiceIssueSection = 'invoice' | 'seller' | 'buyer' | 'items' | 'tax' | 'files';
+
+export interface InvoiceIssue {
+  message: string;
+  section: InvoiceIssueSection;
+  field?: string;
+  row?: number;
+}
+
 export interface InvoiceBuildResult {
   data: InvoiceData;
   errors: string[];
+  issues: InvoiceIssue[];
 }
 
 interface PostData {
@@ -141,10 +151,24 @@ interface FilesData {
 
 class InvoiceBuilder {
   private errors: string[] = [];
+  private issues: InvoiceIssue[] = [];
   private post: PostData;
 
   constructor(post: PostData) {
     this.post = post;
+  }
+
+  private issue(issue: InvoiceIssue): void {
+    this.issues.push(issue);
+    this.errors.push(issue.message);
+  }
+
+  validationIssues(): InvoiceIssue[] {
+    return this.issues;
+  }
+
+  validationErrors(): string[] {
+    return this.errors;
   }
 
   private str(key: string, defaultValue = '', source?: PostData | null, max = 500): string {
@@ -210,7 +234,11 @@ class InvoiceBuilder {
       const prefix = comma === -1 ? '' : dataUrl.slice(0, comma);
       
       if (!['data:image/png;base64', 'data:image/jpeg;base64'].includes(prefix)) {
-        this.errors.push(`${label} must be a PNG or JPG image.`);
+        this.issue({
+          message: `${label} must be a PNG or JPG image.`,
+          section: 'files',
+          field,
+        });
         return null;
       }
       
@@ -224,19 +252,19 @@ class InvoiceBuilder {
         }
         bytes = bytesArray.buffer;
       } catch {
-        this.errors.push(`${label} could not be read.`);
+        this.issue({ message: `${label} could not be read.`, section: 'files', field });
         return null;
       }
     }
     
     if (!bytes) {
-      this.errors.push(`${label} could not be read.`);
+      this.issue({ message: `${label} could not be read.`, section: 'files', field });
       return null;
     }
     
     const size = bytes instanceof ArrayBuffer ? bytes.byteLength : bytes.length;
     if (size > MAX_IMAGE_BYTES) {
-      this.errors.push(`${label} must be 2 MB or smaller.`);
+      this.issue({ message: `${label} must be 2 MB or smaller.`, section: 'files', field });
       return null;
     }
     
@@ -319,31 +347,43 @@ class InvoiceBuilder {
       : '';
 
     if (!number) {
-      this.errors.push('Invoice number is required.');
+      this.issue({ message: 'Invoice number is required.', section: 'invoice', field: 'invoice_number' });
     } else if (india) {
       if (number.length > 16) {
-        this.errors.push('Invoice number must be 16 characters or fewer for a GST invoice.');
+        this.issue({
+          message: 'Invoice number must be 16 characters or fewer for a GST invoice.',
+          section: 'invoice',
+          field: 'invoice_number',
+        });
       } else if (!/^[A-Za-z0-9/\-]+$/.test(number)) {
-        this.errors.push('Invoice number may only use letters, numbers, "-" and "/" for a GST invoice.');
+        this.issue({
+          message: 'Invoice number may only use letters, numbers, "-" and "/" for a GST invoice.',
+          section: 'invoice',
+          field: 'invoice_number',
+        });
       }
     }
 
     if (!InvoiceBuilder.formatDate(date)) {
-      this.errors.push('Invoice date is invalid.');
+      this.issue({ message: 'Invoice date is invalid.', section: 'invoice', field: 'invoice_date' });
     }
     if (dueDate && !InvoiceBuilder.formatDate(dueDate)) {
-      this.errors.push('Due date is invalid.');
+      this.issue({ message: 'Due date is invalid.', section: 'invoice', field: 'due_date' });
     }
     if (!seller.name) {
-      this.errors.push('Your business name is required.');
+      this.issue({ message: 'Your business name is required.', section: 'seller', field: 'seller_name' });
     }
     if (!buyer.name) {
-      this.errors.push('Client name is required.');
+      this.issue({ message: 'Client name is required.', section: 'buyer', field: 'buyer_name' });
     }
 
     for (const [who, p] of [['seller', seller], ['buyer', buyer]] as const) {
       if (p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) {
-        this.errors.push(`${who === 'seller' ? 'Your' : 'Client'} email address is invalid.`);
+        this.issue({
+          message: `${who === 'seller' ? 'Your' : 'Client'} email address is invalid.`,
+          section: who === 'seller' ? 'seller' : 'buyer',
+          field: who === 'seller' ? 'seller_email' : 'buyer_email',
+        });
       }
     }
 
@@ -371,11 +411,15 @@ class InvoiceBuilder {
       seller.tax_id = gstinNormalize(seller.tax_id);
       
       if (!seller.tax_id) {
-        this.errors.push('Your GSTIN is required for a GST invoice.');
+        this.issue({
+          message: 'Your GSTIN is required for a GST invoice.',
+          section: 'tax',
+          field: 'seller_tax_id',
+        });
       } else {
         const err = gstinError(seller.tax_id);
         if (err) {
-          this.errors.push(`Your GSTIN ${err}.`);
+          this.issue({ message: `Your GSTIN ${err}.`, section: 'tax', field: 'seller_tax_id' });
         } else {
           sellerStateCode = gstinStateCode(seller.tax_id);
           if (!seller.pan) {
@@ -397,7 +441,7 @@ class InvoiceBuilder {
       if (buyer.tax_id) {
         const err = gstinError(buyer.tax_id);
         if (err) {
-          this.errors.push(`Client GSTIN ${err}.`);
+          this.issue({ message: `Client GSTIN ${err}.`, section: 'tax', field: 'buyer_tax_id' });
         } else {
           buyerStateCode = gstinStateCode(buyer.tax_id);
           if (!buyer.pan) {
@@ -415,7 +459,11 @@ class InvoiceBuilder {
         posCode = buyerStateCode;
       }
       if (!posCode) {
-        this.errors.push("Place of supply is required. Choose the client's state or enter their GSTIN.");
+        this.issue({
+          message: "Place of supply is required. Choose the client's state or enter their GSTIN.",
+          section: 'tax',
+          field: 'place_of_supply',
+        });
       }
       if (sellerStateCode && posCode) {
         isInter = sellerStateCode !== posCode;
@@ -428,10 +476,18 @@ class InvoiceBuilder {
       posCode = PLACE_OF_SUPPLY_EXPORT;
       isInter = true;
       if (!buyer.country || buyer.country.toLowerCase() === 'india') {
-        this.errors.push('Client country is required for an export invoice and must be outside India.');
+        this.issue({
+          message: 'Client country is required for an export invoice and must be outside India.',
+          section: 'buyer',
+          field: 'buyer_country',
+        });
       }
       if (exportType === 'lut' && !lutArn) {
-        this.errors.push('LUT reference (ARN) is required when exporting without paying IGST.');
+        this.issue({
+          message: 'LUT reference (ARN) is required when exporting without paying IGST.',
+          section: 'tax',
+          field: 'lut_arn',
+        });
       }
     }
 
@@ -459,22 +515,57 @@ class InvoiceBuilder {
       }
 
       if (!desc) {
-        this.errors.push(`Item ${row}: description is required.`);
+        this.issue({
+          message: `Item ${row}: description is required.`,
+          section: 'items',
+          field: 'description',
+          row,
+        });
       }
       if (qty <= 0) {
-        this.errors.push(`Item ${row}: quantity must be greater than 0.`);
+        this.issue({
+          message: `Item ${row}: quantity must be greater than 0.`,
+          section: 'items',
+          field: 'qty',
+          row,
+        });
       } else if (qty > MAX_QTY) {
-        this.errors.push(`Item ${row}: quantity is too large.`);
+        this.issue({
+          message: `Item ${row}: quantity is too large.`,
+          section: 'items',
+          field: 'qty',
+          row,
+        });
       }
       if (price < 0) {
-        this.errors.push(`Item ${row}: unit price cannot be negative.`);
+        this.issue({
+          message: `Item ${row}: unit price cannot be negative.`,
+          section: 'items',
+          field: 'price',
+          row,
+        });
       } else if (price > MAX_PRICE) {
-        this.errors.push(`Item ${row}: unit price is too large.`);
+        this.issue({
+          message: `Item ${row}: unit price is too large.`,
+          section: 'items',
+          field: 'price',
+          row,
+        });
       }
       if (india && !hsn) {
-        this.errors.push(`Item ${row}: HSN/SAC code is required for a GST invoice.`);
+        this.issue({
+          message: `Item ${row}: HSN/SAC code is required for a GST invoice.`,
+          section: 'items',
+          field: 'hsn',
+          row,
+        });
       } else if (hsn && !/^\d+$/.test(hsn)) {
-        this.errors.push(`Item ${row}: HSN/SAC code must contain digits only.`);
+        this.issue({
+          message: `Item ${row}: HSN/SAC code must contain digits only.`,
+          section: 'items',
+          field: 'hsn',
+          row,
+        });
       }
 
       const gross = Math.round(qty * price * 100) / 100;
@@ -496,7 +587,7 @@ class InvoiceBuilder {
     }
 
     if (items.length === 0) {
-      this.errors.push('Add at least one line item.');
+      this.issue({ message: 'Add at least one line item.', section: 'items', field: 'description' });
     }
 
     // Totals
@@ -573,7 +664,7 @@ class InvoiceBuilder {
     const balanceDue = Math.round((grandTotal - amountPaid) * 100) / 100;
 
     if (!Number.isFinite(grandTotal) || grandTotal > MAX_TOTAL || amountPaid > MAX_TOTAL) {
-      this.errors.push('The invoice total is too large.');
+      this.issue({ message: 'The invoice total is too large.', section: 'invoice', field: 'other_charges' });
     }
 
     // Payment details
@@ -685,5 +776,5 @@ class InvoiceBuilder {
 export function buildInvoice(post: PostData, files: FilesData = {}): InvoiceBuildResult {
   const builder = new InvoiceBuilder(post);
   const data = builder.assemble(files);
-  return { data, errors: builder['errors'] };
+  return { data, errors: builder.validationErrors(), issues: builder.validationIssues() };
 }

@@ -708,6 +708,18 @@ export function initInvoiceApp() {
   var previewTimer = null;
   var previewSeq = 0;
   var lastErrors = [];
+  var lastIssues = [];
+  var formRevision = 0;
+  var formRevisionAtPreview = -1;
+  var ISSUE_SECTION_ORDER = ['invoice', 'seller', 'buyer', 'items', 'tax', 'files'];
+  var ISSUE_SECTION_LABELS = {
+    invoice: 'Invoice details',
+    seller: 'Your business',
+    buyer: 'Client',
+    items: 'Line items',
+    tax: 'Tax & compliance',
+    files: 'Uploads',
+  };
 
   function fitPreview() {
     var doc = frame.contentDocument;
@@ -723,21 +735,166 @@ export function initInvoiceApp() {
   frame.addEventListener('load', fitPreview);
   window.addEventListener('resize', fitPreview);
 
-  function showIssues(errors) {
-    var box = $('#issues');
-    var list = $('#issuesList');
-    list.innerHTML = '';
-    errors.slice(0, 6).forEach(function (msg) {
-      var li = document.createElement('li');
-      li.textContent = msg;
-      list.appendChild(li);
+  function normalizeIssues(issues, errors) {
+    if (issues && issues.length) return issues;
+    return (errors || []).map(function (msg) {
+      return { message: msg, section: 'invoice' };
     });
-    if (errors.length > 6) {
-      var more = document.createElement('li');
-      more.textContent = 'and ' + (errors.length - 6) + ' more';
-      list.appendChild(more);
+  }
+
+  function resolveIssueTarget(issue) {
+    if (!issue) return null;
+    var field = issue.field;
+    if (issue.section === 'items') {
+      var rows = $$('.item-row', itemsBody);
+      var row = issue.row ? rows[issue.row - 1] : rows[0];
+      if (row && field) {
+        var inRow = $('[data-f="' + field + '"]', row);
+        if (inRow) return inRow;
+      }
+      if (row) return $('[data-f="description"]', row) || row;
+      return $('[data-f="description"]', itemsBody);
     }
-    box.hidden = errors.length === 0;
+    if (field === 'logo') return $('[data-file="logo"]') || $('#logoBtn');
+    if (field === 'signature') return $('[data-file="signature"]') || $('#signatureBtn');
+    if (field) {
+      var el = $('#' + field);
+      if (el) return el;
+    }
+    return null;
+  }
+
+  function focusIssue(issue) {
+    var el = resolveIssueTarget(issue);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (typeof el.focus === 'function') {
+      try { el.focus({ preventScroll: true }); } catch (e) { el.focus(); }
+    }
+  }
+
+  function syncFieldHighlights(issues) {
+    $$('.field-invalid', form).forEach(function (el) { el.classList.remove('field-invalid'); });
+    issues.forEach(function (issue) {
+      var el = resolveIssueTarget(issue);
+      if (el && el.classList) el.classList.add('field-invalid');
+    });
+  }
+
+  function appendIssueRow(list, issue) {
+    var li = document.createElement('li');
+    li.className = 'issues-item';
+    li.setAttribute('role', 'listitem');
+    var msg = document.createElement('span');
+    msg.className = 'issues-item-msg';
+    msg.textContent = issue.message;
+    li.appendChild(msg);
+    if (resolveIssueTarget(issue)) {
+      var fix = document.createElement('button');
+      fix.type = 'button';
+      fix.className = 'issues-fix';
+      fix.textContent = 'Fix';
+      fix.addEventListener('click', function () { focusIssue(issue); });
+      li.appendChild(fix);
+    }
+    list.appendChild(li);
+  }
+
+  function renderIssues(issues) {
+    var normalized = normalizeIssues(issues, lastErrors);
+    lastIssues = normalized;
+    var box = $('#issues');
+    var groups = $('#issuesGroups');
+    var dock = $('#issuesDock');
+    var dockList = $('#issuesDockList');
+    var dockCount = $('#issuesDockCount');
+    groups.innerHTML = '';
+    dockList.innerHTML = '';
+    var bySection = {};
+    normalized.forEach(function (issue) {
+      var sec = issue.section || 'invoice';
+      if (!bySection[sec]) bySection[sec] = [];
+      bySection[sec].push(issue);
+    });
+    ISSUE_SECTION_ORDER.forEach(function (sec) {
+      var list = bySection[sec];
+      if (!list || !list.length) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'issues-group';
+      wrap.setAttribute('role', 'group');
+      var title = document.createElement('p');
+      title.className = 'issues-group-title';
+      title.textContent = ISSUE_SECTION_LABELS[sec] || sec;
+      wrap.appendChild(title);
+      var ul = document.createElement('ul');
+      ul.className = 'issues-group-list';
+      list.forEach(function (issue) { appendIssueRow(ul, issue); });
+      wrap.appendChild(ul);
+      groups.appendChild(wrap);
+    });
+    normalized.slice(0, 8).forEach(function (issue) {
+      var row = document.createElement('div');
+      row.className = 'issues-dock-item';
+      var text = document.createElement('span');
+      text.textContent = issue.message;
+      row.appendChild(text);
+      if (resolveIssueTarget(issue)) {
+        var fix = document.createElement('button');
+        fix.type = 'button';
+        fix.className = 'issues-fix';
+        fix.textContent = 'Fix';
+        fix.addEventListener('click', function () { focusIssue(issue); });
+        row.appendChild(fix);
+      }
+      dockList.appendChild(row);
+    });
+    if (normalized.length > 8) {
+      var more = document.createElement('div');
+      more.className = 'issues-dock-item';
+      more.textContent = '…and ' + (normalized.length - 8) + ' more in the list above.';
+      dockList.appendChild(more);
+    }
+    var n = normalized.length;
+    box.hidden = n === 0;
+    dock.hidden = n === 0;
+    if (dockCount) dockCount.textContent = n ? String(n) : '';
+    syncFieldHighlights(normalized);
+    if (n === 1) statusEl.textContent = '1 thing to fix';
+    else if (n > 1) statusEl.textContent = n + ' things to fix';
+    else statusEl.textContent = 'Up to date';
+  }
+
+  function applyPreviewPayload(res) {
+    frame.srcdoc = res.html;
+    lastErrors = res.errors || [];
+    formRevisionAtPreview = formRevision;
+    $('#tSubtotal').textContent = res.totals.subtotal;
+    $('#tTax').textContent = res.totals.tax;
+    $('#tGrand').textContent = res.totals.grand_total;
+    $('#tBalance').textContent = res.totals.balance_due;
+    $('#tBalanceRow').hidden = !(parseFloat($('#amount_paid').value) > 0);
+    renderIssues(res.issues);
+    return lastErrors;
+  }
+
+  function isPreviewFresh() {
+    return !previewTimer && formRevision === formRevisionAtPreview;
+  }
+
+  function ensurePreviewForDownload() {
+    if (isPreviewFresh()) {
+      return Promise.resolve({
+        errors: lastErrors.slice(),
+        issues: lastIssues.slice(),
+      });
+    }
+    clearTimeout(previewTimer);
+    previewTimer = null;
+    statusEl.textContent = 'Updating…';
+    return runPreview().then(function (errors) {
+      if (errors === null) return null;
+      return { errors: lastErrors.slice(), issues: lastIssues.slice() };
+    });
   }
 
   function runPreview() {
@@ -746,17 +903,9 @@ export function initInvoiceApp() {
     return fetch('/api/invoice/preview', { method: 'POST', body: new FormData(form) })
       .then(function (r) { return r.json(); })
       .then(function (res) {
-        if (seq !== previewSeq) return;
+        if (seq !== previewSeq) return lastErrors;
         if (!res.ok) throw new Error((res.errors || ['Preview failed'])[0]);
-        frame.srcdoc = res.html;
-        lastErrors = res.errors || [];
-        showIssues(lastErrors);
-        $('#tSubtotal').textContent = res.totals.subtotal;
-        $('#tTax').textContent = res.totals.tax;
-        $('#tGrand').textContent = res.totals.grand_total;
-        $('#tBalance').textContent = res.totals.balance_due;
-        $('#tBalanceRow').hidden = !(parseFloat($('#amount_paid').value) > 0);
-        statusEl.textContent = 'Up to date';
+        applyPreviewPayload(res);
         return lastErrors;
       })
       .catch(function (e) {
@@ -771,8 +920,16 @@ export function initInvoiceApp() {
     previewTimer = setTimeout(runPreview, 450);
   }
 
-  form.addEventListener('input', schedulePreview);
+  function onFormInput(e) {
+    formRevision += 1;
+    if (e.target && e.target.classList) e.target.classList.remove('field-invalid');
+    schedulePreview();
+  }
+
+  form.addEventListener('input', onFormInput);
   form.addEventListener('change', function (e) {
+    formRevision += 1;
+    if (e.target && e.target.classList) e.target.classList.remove('field-invalid');
     if (e.target.name === 'mode') onModeChange();
     if (e.target.name === 'export_type') { fillEmptyRates(); applyVisibility(); }
     if (e.target.id === 'tax_id_label' || e.target.id === 'tax_name') updateLabels();
@@ -831,22 +988,180 @@ export function initInvoiceApp() {
 
   /* ---------------- Download ---------------- */
 
+  var downloadStatusEl = $('#downloadStatus');
+
+  function setDownloadStatus(message, tone) {
+    if (!downloadStatusEl) return;
+    if (!message) {
+      downloadStatusEl.hidden = true;
+      downloadStatusEl.textContent = '';
+      downloadStatusEl.classList.remove('is-warn', 'is-ok');
+      return;
+    }
+    downloadStatusEl.hidden = false;
+    downloadStatusEl.textContent = message;
+    downloadStatusEl.classList.remove('is-warn', 'is-ok');
+    if (tone) downloadStatusEl.classList.add(tone);
+  }
+
+  function parsePdfErrorBody(text, contentType) {
+    var errors = [];
+    var issues = null;
+    if ((contentType || '').indexOf('application/json') !== -1) {
+      try {
+        var data = JSON.parse(text);
+        if (data && Array.isArray(data.errors)) errors = data.errors;
+        if (data && Array.isArray(data.issues)) issues = data.issues;
+      } catch (e) {}
+    }
+    if (!errors.length && text) {
+      var liRe = /<li[^>]*>([^<]+)<\/li>/gi;
+      var m;
+      while ((m = liRe.exec(text))) errors.push(m[1].trim());
+    }
+    if (!errors.length && text) {
+      var plain = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      if (plain) errors = [plain.slice(0, 240)];
+    }
+    return { errors: errors, issues: issues };
+  }
+
+  function focusFirstInvalidField() {
+    if (lastIssues.length) focusIssue(lastIssues[0]);
+  }
+
+  function filenameFromDisposition(header, fallback) {
+    var match = /filename="([^"]+)"/.exec(header || '');
+    return (match && match[1]) || fallback || 'invoice.pdf';
+  }
+
+  function savePdfFileAnchor(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name || 'invoice.pdf';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+
+  function savePdfViaIframe() {
+    var prevTarget = form.target;
+    form.target = 'pdfDownloadFrame';
+    form.submit();
+    form.target = prevTarget || '';
+  }
+
+  function savePdfBlob(blob, name) {
+    if (typeof window.showSaveFilePicker === 'function') {
+      return window.showSaveFilePicker({
+        suggestedName: name,
+        types: [{ description: 'PDF', accept: { 'application/pdf': ['.pdf'] } }],
+      }).then(function (handle) {
+        return handle.createWritable().then(function (writable) {
+          return writable.write(blob).then(function () { return writable.close(); });
+        });
+      }).then(function () {
+        setDownloadStatus('PDF saved.', 'is-ok');
+        return true;
+      }).catch(function (err) {
+        if (err && err.name === 'AbortError') return false;
+        savePdfFileAnchor(blob, name);
+        return true;
+      });
+    }
+    savePdfFileAnchor(blob, name);
+    setDownloadStatus('If the download did not start, check your browser’s download bar or pop-up settings.', 'is-warn');
+    return Promise.resolve(true);
+  }
+
+  function fetchInvoicePdf() {
+    return fetch('/api/invoice/pdf', {
+      method: 'POST',
+      headers: { Accept: 'application/pdf, application/json' },
+      body: new FormData(form),
+    }).then(function (r) {
+      var type = r.headers.get('Content-Type') || '';
+      if (r.ok && type.indexOf('application/pdf') !== -1) {
+        var name = filenameFromDisposition(r.headers.get('Content-Disposition'), 'invoice.pdf');
+        return r.blob().then(function (blob) { return { ok: true, blob: blob, name: name }; });
+      }
+      return r.text().then(function (text) {
+        var parsed = parsePdfErrorBody(text, type);
+        return { ok: false, errors: parsed.errors, issues: parsed.issues };
+      });
+    });
+  }
+
   $('#downloadBtn').addEventListener('click', function () {
     var btn = this;
-    btn.disabled = true;
-    btn.textContent = 'Checking…';
-    clearTimeout(previewTimer);
-    runPreview().then(function (errors) {
-      btn.disabled = false;
-      btn.textContent = 'Download PDF';
-      if (errors === null) { alert('Could not reach the server. Please try again.'); return; }
-      if (errors.length) {
-        $('#issues').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setDownloadStatus('');
+    ensurePreviewForDownload().then(function (bundle) {
+      if (bundle === null) {
+        setDownloadStatus('Could not reach the server. Please try again.', 'is-warn');
         return;
       }
-      saveProfile();
-      try { localStorage.setItem(LAST_NO_KEY, $('#invoice_number').value.trim()); } catch (e) {}
-      form.submit();
+      if (bundle.errors.length) {
+        lastErrors = bundle.errors;
+        renderIssues(bundle.issues);
+        var n = bundle.errors.length;
+        setDownloadStatus(
+          n === 1
+            ? 'Fix 1 item below, then download again.'
+            : 'Fix ' + n + ' items below, then download again.',
+          'is-warn'
+        );
+        var dock = $('#issuesDock');
+        if (dock) dock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        focusFirstInvalidField();
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Preparing PDF…';
+      return fetchInvoicePdf()
+        .then(function (result) {
+          if (!result.ok) {
+            lastErrors = result.errors || ['The PDF could not be generated.'];
+            lastIssues = normalizeIssues(result.issues, lastErrors);
+            renderIssues(lastIssues);
+            setDownloadStatus(lastErrors[0] || 'The PDF could not be generated.', 'is-warn');
+            if (typeof console !== 'undefined' && console.error) {
+              console.error('Invoice PDF error', lastErrors);
+            }
+            return;
+          }
+          return savePdfBlob(result.blob, result.name).then(function (saved) {
+            if (!saved) {
+              setDownloadStatus('Download cancelled.', 'is-warn');
+              return;
+            }
+            saveProfile();
+            try { localStorage.setItem(LAST_NO_KEY, $('#invoice_number').value.trim()); } catch (e) {}
+            if (!downloadStatusEl || downloadStatusEl.classList.contains('is-warn')) {
+              setDownloadStatus('PDF ready — check your downloads folder.', 'is-ok');
+            }
+          }).catch(function () {
+            savePdfViaIframe();
+            setDownloadStatus('PDF is being prepared in the background. Check your downloads folder.', 'is-ok');
+            saveProfile();
+            try { localStorage.setItem(LAST_NO_KEY, $('#invoice_number').value.trim()); } catch (e) {}
+          });
+        })
+        .catch(function () {
+          savePdfViaIframe();
+          setDownloadStatus('Generating PDF via form submit — check your downloads folder.', 'is-ok');
+        })
+        .then(function () {
+          btn.disabled = false;
+          btn.textContent = 'Download PDF';
+        });
+    }).catch(function () {
+      setDownloadStatus('Something went wrong. Please try again.', 'is-warn');
+    }).then(function () {
+      btn.disabled = false;
+      btn.textContent = 'Download PDF';
     });
   });
 

@@ -5,12 +5,13 @@ export const runtime = "nodejs";
 export async function POST(request: Request) {
   try {
     const { post, files } = await parseInvoiceFormData(request);
-    const { data: invoice, errors } = buildInvoice(post, files);
+    const { data: invoice, errors, issues } = buildInvoice(post, files);
 
     return Response.json(
       {
         ok: true,
         errors,
+        issues,
         html: invoicePreviewHtml(invoice),
         totals: {
           subtotal: formatMoney(invoice.subtotal, invoice.currency),
