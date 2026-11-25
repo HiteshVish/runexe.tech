@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  transpilePackages: ["pdfjs-dist", "pdf-lib", "konva", "react-konva"],
   // Dynamic pages (the invoice tool) would otherwise stream <title>, description and
   // canonical into <body>; AI crawlers that do not run JavaScript would miss them.
   htmlLimitedBots: /.*/,

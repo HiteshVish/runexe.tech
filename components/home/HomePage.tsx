@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { initRunexeHome } from "@/lib/home/runexe-home";
 import homeBody from "@/lib/home/home-body";
 import "@/styles/home.css";
 import "lenis/dist/lenis.css";
@@ -17,10 +16,19 @@ export default function HomePage() {
     const root = rootRef.current;
     if (!root) return;
 
-    const cleanup = initRunexeHome();
+    let disposed = false;
+    let cleanup: (() => void) | undefined;
+
+    // Load after mount in its own chunk so Turbopack HMR never keeps a stale
+    // edge to removed deps (e.g. three.js from an earlier port).
+    void import("@/lib/home/runexe-home").then(({ initRunexeHome }) => {
+      if (disposed) return;
+      cleanup = initRunexeHome();
+    });
 
     return () => {
-      cleanup();
+      disposed = true;
+      cleanup?.();
       // The script rewrites parts of the DOM (split text, marquee copies,
       // inline styles). Put the original markup back so a re-mount starts clean.
       root.innerHTML = homeBody;

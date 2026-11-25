@@ -7,20 +7,36 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update-geoip": "tsx scripts/update-geoip.ts"
+    "update-geoip": "tsx scripts/update-geoip.ts",
+    "test:qr": "tsx --test lib/qr/__tests__/payloads.test.ts",
+    "test:password": "tsx --test lib/password/__tests__/*.test.ts",
+    "test:text": "tsx --test lib/text/__tests__/*.test.ts",
+    "test:pdf-studio": "tsx --test lib/pdf-studio/__tests__/*.test.ts"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@pdf-lib/fontkit": "^1.1.1",
     "@sparticuz/chromium-min": "^133.0.0",
     "gsap": "^3.12.5",
+    "jszip": "^3.10.2",
+    "konva": "^10.11.0",
     "lenis": "^1.1.14",
     "mmdb-lib": "^2.1.0",
     "next": "^15.5.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.8.69",
     "puppeteer-core": "^24.0.0",
+    "qrcode": "^1.5.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-konva": "^19.3.2",
+    "zustand": "^5.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",

@@ -7,7 +7,7 @@ import { ORG_ID, SITE_URL, TOOLS, TOOL_KEYS, WEBSITE_ID, pageMetadata } from "@/
 import "@/styles/showcase.css";
 
 const description =
-  "Free online tools from RunExe Technology: invoice generator with GST and VAT, temporary email, JSON formatter, Base64, JWT decoder, UUID and hash generators. No signup.";
+  "Free online tools from RunExe Technology: invoice generator, PDF Studio, temp mail, JSON formatter, image compressor, QR and password generators, word counter, and more. No signup.";
 
 export const metadata = pageMetadata({
   title: "Free Online Tools for Developers & Businesses | RunExe",

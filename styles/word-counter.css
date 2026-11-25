@@ -1,0 +1,86 @@
+@import "./dev-tools.css";
+
+.wc-page .wc-privacy {
+  margin: 0 0 18px;
+  font-size: 0.84rem;
+  color: var(--dt-ok);
+  font-weight: 600;
+}
+
+.wc-textarea {
+  width: 100%;
+  min-height: 220px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  resize: vertical;
+}
+
+.wc-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.wc-stat {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--bg-warm);
+}
+.wc-stat--hi {
+  border-color: var(--crimson);
+  background: color-mix(in srgb, var(--crimson) 8%, var(--bg-warm));
+}
+.wc-stat dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-40);
+}
+.wc-stat dd {
+  margin: 4px 0 0;
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+}
+
+.wc-limit-over {
+  color: var(--crimson);
+  font-weight: 600;
+}
+
+.wc-kw table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.wc-page .ic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+.wc-page .ic-chip {
+  font-size: 0.76rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  cursor: pointer;
+  color: var(--ink-60);
+}
+.wc-page .ic-chip[aria-pressed="true"] {
+  border-color: var(--crimson);
+  color: var(--crimson);
+}
+
+.wc-kw th,
+.wc-kw td {
+  border-bottom: 1px solid var(--line);
+  padding: 6px 8px;
+  text-align: left;
+}

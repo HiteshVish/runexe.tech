@@ -75,10 +75,27 @@ export type ToolKey =
   | "base64"
   | "jwt-decoder"
   | "uuid-generator"
-  | "hash-generator";
+  | "hash-generator"
+  | "image-compressor"
+  | "qr-code-generator"
+  | "password-generator"
+  | "word-counter"
+  | "pdf-editor";
 
 export type ToolCategory = "Business" | "Privacy" | "Developer";
-export type ToolIconName = "invoice" | "mail" | "braces" | "base64" | "key" | "fingerprint" | "hash";
+export type ToolIconName =
+  | "invoice"
+  | "mail"
+  | "braces"
+  | "base64"
+  | "key"
+  | "fingerprint"
+  | "hash"
+  | "image"
+  | "qr"
+  | "lock"
+  | "text"
+  | "pdf";
 
 export type Tool = {
   name: string;
@@ -156,9 +173,57 @@ export const TOOLS: Record<ToolKey, Tool> = {
     icon: "hash",
     tags: ["SHA-256", "SHA-512", "Files"],
   },
+  "image-compressor": {
+    name: "Image Compressor & Resizer",
+    path: "/tools/image-compressor",
+    summary: "Compress and resize JPG, PNG and WebP to a target size. Runs in your browser — nothing is uploaded.",
+    category: "Developer",
+    runsIn: "browser",
+    icon: "image",
+    tags: ["Compress", "Resize", "WebP", "Target KB"],
+  },
+  "qr-code-generator": {
+    name: "QR Code Generator",
+    path: "/tools/qr-code-generator",
+    summary: "Create URL, WiFi, WhatsApp and UPI QR codes. Customize and download PNG or SVG — runs in your browser.",
+    category: "Developer",
+    runsIn: "browser",
+    icon: "qr",
+    tags: ["UPI", "WiFi", "WhatsApp", "PNG"],
+  },
+  "password-generator": {
+    name: "Password Generator",
+    path: "/tools/password-generator",
+    summary: "Strong random passwords and passphrases with crypto.getRandomValues. Nothing is stored or sent.",
+    category: "Privacy",
+    runsIn: "browser",
+    icon: "lock",
+    tags: ["Secure", "Passphrase", "Copy"],
+  },
+  "word-counter": {
+    name: "Word & Character Counter",
+    path: "/tools/word-counter",
+    summary: "Count words, characters and reading time with Unicode support. Keyword density and limits — private.",
+    category: "Developer",
+    runsIn: "browser",
+    icon: "text",
+    tags: ["Words", "Unicode", "SEO limits"],
+  },
+  "pdf-editor": {
+    name: "PDF Studio",
+    path: "/tools/pdf-editor",
+    summary: "Edit, merge, split, sign and organize PDFs in your browser. Free — no signup, no upload, no watermarks.",
+    category: "Business",
+    runsIn: "browser",
+    icon: "pdf",
+    tags: ["Merge", "Split", "Sign", "Edit"],
+  },
 };
 
 export const TOOL_KEYS = Object.keys(TOOLS) as ToolKey[];
+
+/** Stable count for nav copy — keep in sync with TOOLS.runsIn === "browser". */
+export const BROWSER_TOOL_COUNT = TOOL_KEYS.filter((k) => TOOLS[k].runsIn === "browser").length;
 
 type PageSeo = {
   title: string;

@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getLenis, initSiteChrome } from "@/lib/site/site-chrome";
-import { TOOLS, TOOL_KEYS } from "@/lib/seo/site";
+import { BROWSER_TOOL_COUNT, TOOLS, TOOL_KEYS } from "@/lib/seo/site";
 import ToolIcon from "@/components/tools/ToolIcon";
 import "@/styles/site-chrome.css";
 import "lenis/dist/lenis.css";
@@ -93,7 +93,9 @@ export default function SiteChrome() {
                 <div className="nav-dd-card">
                   <div className="nav-dd-head">
                     <span>Free tools</span>
-                    <small>No signup · {TOOL_KEYS.filter((k) => TOOLS[k].runsIn === "browser").length} run in your browser</small>
+                    <small suppressHydrationWarning>
+                      No signup · {BROWSER_TOOL_COUNT} run in your browser
+                    </small>
                   </div>
                   <ul className="nav-dd-grid">
                     {TOOL_KEYS.map((k) => {

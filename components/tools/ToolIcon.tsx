@@ -35,6 +35,40 @@ const PATHS: Record<ToolIconName, React.ReactNode> = {
     </>
   ),
   hash: <path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18" />,
+  image: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <circle cx="8.5" cy="10" r="1.5" />
+      <path d="m21 17-5-5L5 21" />
+    </>
+  ),
+  qr: (
+    <>
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <path d="M14 14h2v2h-2zM18 14h3v3h-3zM14 18h3v3h-3zM18 21h3v-3" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </>
+  ),
+  text: (
+    <>
+      <path d="M4 6h16M4 18h10" />
+      <path d="M12 4v16M8 4h8" />
+    </>
+  ),
+  pdf: (
+    <>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+      <path d="M10 13h4M10 17h4M10 9h1" />
+    </>
+  ),
 };
 
 export default function ToolIcon({ name }: { name: ToolIconName }) {
