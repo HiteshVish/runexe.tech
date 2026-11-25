@@ -14,6 +14,19 @@ function csrfToken(){
 
 function apiEndpoint(){ return '/api/tempmail'; }
 
+function parseApiResponse(r){
+  return r.json().then(function(data){
+    if(r.status === 429){
+      var msg = (data && data.message) || 'Too many requests. Please wait and try again.';
+      var err = new Error(msg);
+      err.status = 429;
+      err.retryAfterSec = data && data.retryAfterSec;
+      throw err;
+    }
+  return data;
+  });
+}
+
 function escapeHtml(s){
   return String(s ?? '').replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
 }
@@ -164,7 +177,7 @@ function generateEmail(){
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':csrfToken()},
     body: JSON.stringify({})
-  }).then(r=>r.json()).then(data=>{
+  }).then(parseApiResponse).then(data=>{
     if(!data?.ok) throw new Error(data?.message || 'Failed to generate email');
     mailboxTag = data.tag;
     mailboxTimestampFrom = data.timestamp_from;
@@ -182,7 +195,7 @@ function generateEmail(){
     btn.style.opacity='1';btn.style.cursor='pointer';
     const failed = String(err?.message || '').toLowerCase().includes('failed to fetch') || err?.name === 'TypeError';
     alert(failed
-      ? 'Could not reach the PHP API. Start Apache in XAMPP and open:\nhttp:///api/tempmail'
+      ? 'Could not reach the temp mail API. Check your connection and try again.'
       : (err?.message || 'Something went wrong'));
   });
 }
@@ -312,7 +325,7 @@ function refreshInbox(opts){
 
   fetch(`${apiEndpoint()}?action=inbox&${qs.toString()}`,{
     headers:{'Accept':'application/json'}
-  }).then(r=>r.json()).then(data=>{
+  }).then(parseApiResponse).then(data=>{
     if(!data?.ok) throw new Error(data?.message || 'Failed to fetch inbox');
 
     inboxEmails = (data.emails || []).map(mapApiEmail);

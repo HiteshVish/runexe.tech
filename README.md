@@ -5,7 +5,7 @@ Next.js 15 App Router port of the RunExe Technology site and tools. Legacy HTML/
 ## Develop
 
 ```bash
-cp .env.example .env.local   # add TESTMAIL_* and optional GST_* keys
+cp .env.example .env.local   # optional GST_* keys (temp mail credentials live in lib/tempmail/testmail-config.ts)
 npm install
 npm run dev
 ```

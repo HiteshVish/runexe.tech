@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
+import { TESTMAIL_APIKEY, TESTMAIL_NAMESPACE } from "@/lib/tempmail/testmail-config";
+import { checkTempmailRateLimit, normalizeTempmailAction } from "@/lib/tempmail/rate-limit";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,14 +9,20 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Accept, X-CSRF-TOKEN",
 };
 
-function json(data: unknown, status = 200) {
-  return NextResponse.json(data, { status, headers: corsHeaders });
+function json(data: unknown, status = 200, extraHeaders?: Record<string, string>) {
+  return NextResponse.json(data, {
+    status,
+    headers: { ...corsHeaders, ...extraHeaders },
+  });
 }
 
-function config() {
-  const apikey = process.env.TESTMAIL_APIKEY || "";
-  const namespace = process.env.TESTMAIL_NAMESPACE || "";
-  return { apikey, namespace };
+function clientIp(req: NextRequest): string {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return req.headers.get("x-real-ip")?.trim() || "unknown";
 }
 
 async function testmailGet(params: Record<string, string | number>, timeout = 20000) {
@@ -53,19 +61,7 @@ export async function POST(req: NextRequest) {
   return handleAction(req);
 }
 
-async function handleAction(req: NextRequest) {
-  const { apikey, namespace } = config();
-  if (!apikey || !namespace) {
-    return json(
-      {
-        ok: false,
-        message:
-          "Temp mail is not configured. Add TESTMAIL_APIKEY and TESTMAIL_NAMESPACE in environment.",
-      },
-      500,
-    );
-  }
-
+async function resolveAction(req: NextRequest): Promise<string> {
   let action = req.nextUrl.searchParams.get("action");
   if (!action) {
     try {
@@ -77,7 +73,27 @@ async function handleAction(req: NextRequest) {
       /* ignore */
     }
   }
-  action = action || "";
+  return action || "";
+}
+
+async function handleAction(req: NextRequest) {
+  const apikey = TESTMAIL_APIKEY;
+  const namespace = TESTMAIL_NAMESPACE;
+
+  const action = await resolveAction(req);
+  const rateAction = normalizeTempmailAction(action);
+  const limit = checkTempmailRateLimit(clientIp(req), rateAction);
+  if (!limit.allowed) {
+    return json(
+      {
+        ok: false,
+        message: limit.message,
+        retryAfterSec: limit.retryAfterSec,
+      },
+      429,
+      { "Retry-After": String(limit.retryAfterSec) },
+    );
+  }
 
   if (action === "generate") {
     const tag = randomBytes(3).toString("hex").toLowerCase();
