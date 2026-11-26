@@ -1,6 +1,6 @@
 # PDF Studio — status
 
-Last updated: 2026-11-25
+Last updated: 2026-11-26
 
 ## Completed
 
@@ -13,6 +13,9 @@ Last updated: 2026-11-25
 - [x] Phase 1 SEO landings + unit tests + build
 - [x] Phase 2 utilities (compress, PDF↔image, image→PDF, crop, metadata)
 - [x] Phase 3 capability registry (gated; unpublished)
+- [x] Canva-like UI polish (canvas-first grid, icon toolbars, filmstrip, mobile dock)
+- [x] Tool correctness (pan, fullscreen, crop export, drag shapes, pointer/touch)
+- [x] Per-landing unique FAQ / HowTo / BreadcrumbList / WebApplication URL + Twitter images
 
 ## Available routes
 
@@ -36,34 +39,25 @@ Last updated: 2026-11-25
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Protect / Unlock PDF | Blocked | Need MIT/Apache browser encryption engine (e.g. qpdf-WASM). pdf-lib ignoreEncryption is not decryption. |
-| Secure redaction | Blocked | Whiteout is visual cover only. |
-| Original PDF text edit | Blocked | Overlay text ≠ content stream edit. |
-| PDF ↔ Word | Blocked | No approved conversion engine. |
-| OCR | Gated | Tesseract reserved in `phase3.ts`; not published. |
-| MuPDF.js | Rejected | AGPL — not used. |
-
-## Dependencies added
-
-- `pdfjs-dist`, `pdf-lib`, `@pdf-lib/fontkit`
-- `konva`, `react-konva`
-- `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
-- `zustand`
-- Reused `jszip`
+| Protect / Unlock PDF | Blocked | Need MIT/Apache browser encryption engine |
+| Secure redaction | Blocked | Whiteout is visual cover only |
+| Original PDF text edit | Blocked | Overlay text ≠ content stream edit |
+| PDF ↔ Word | Blocked | No approved conversion engine |
+| OCR | Gated | Not published |
+| MuPDF.js | Rejected | AGPL — not used |
 
 ## Test results
 
-`npm run test:pdf-studio` — 12/12 pass (page ranges, validate, coords, history)
+`npm run test:pdf-studio` — 12/12 pass
 
 ## Build
 
-`npm run build` — success (2026-11-25)
+`npm run build` — see latest CI/local run
 
 ## Known limitations
 
 - Compression presets other than “lossless” rasterize pages (labeled in UI).
-- Crop shrinks page dimensions; does not securely erase hidden content.
-- Metadata strip is limited to common info fields — not full sanitization.
-- Large PDFs may be slow; soft warn above 40 MB, hard reject above 80 MB.
-- Form filling supports common AcroForm fields; XFA unsupported.
-- Virtualization is light (thumbs capped at 80); continuous scroll renders all pages in view list.
+- Crop applies a crop box; does not securely erase hidden content.
+- Metadata strip is limited to common info fields.
+- Continuous scroll still renders listed pages (thumbs capped at 80).
+- No Canva cloud/templates/collaboration (by design — browser-only).

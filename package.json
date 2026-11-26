@@ -29,9 +29,9 @@
     "pdfjs-dist": "^4.8.69",
     "puppeteer-core": "^24.0.0",
     "qrcode": "^1.5.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-konva": "^19.3.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-konva": "19.2.2",
     "zustand": "^5.1.0"
   },
   "devDependencies": {

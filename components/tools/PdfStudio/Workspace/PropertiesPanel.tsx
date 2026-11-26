@@ -17,9 +17,10 @@ export default function PropertiesPanel({ open }: { open: boolean }) {
   return (
     <aside className={`ps-sidebar ps-sidebar--right${open ? " is-drawer" : ""}`} style={{ display: open ? undefined : "none" }}>
       <ModePanels />
-      <div className="ps-props">
-        <h3 style={{ margin: "0 0 8px", fontSize: "0.9rem" }}>Properties</h3>
-        {!obj && <p style={{ color: "var(--ps-muted)", fontSize: "0.8rem" }}>Select an object to edit properties.</p>}
+
+      <div className="ps-block ps-props">
+        <h3>Properties</h3>
+        {!obj && <p className="ps-empty">Select an object on the page to edit its properties.</p>}
         {obj?.type === "text" && (
           <>
             <label>Text</label>
@@ -51,12 +52,12 @@ export default function PropertiesPanel({ open }: { open: boolean }) {
               value={(obj as TextObject).color}
               onChange={(e) => updateObject(obj.id, { color: e.target.value } as Partial<TextObject>)}
             />
-            <label>
+            <label className="ps-check">
               <input
                 type="checkbox"
                 checked={(obj as TextObject).bold}
                 onChange={(e) => updateObject(obj.id, { bold: e.target.checked } as Partial<TextObject>)}
-              />{" "}
+              />
               Bold
             </label>
           </>
@@ -100,10 +101,11 @@ export default function PropertiesPanel({ open }: { open: boolean }) {
             )}
           </>
         )}
+      </div>
 
-        <hr style={{ border: 0, borderTop: "1px solid var(--ps-line)", margin: "16px 0" }} />
-        <h3 style={{ margin: "0 0 8px", fontSize: "0.9rem" }}>Page numbers</h3>
-        <label>
+      <div className="ps-block">
+        <h3>Page numbers</h3>
+        <label className="ps-check">
           <input
             type="checkbox"
             checked={session.pageNumbers.enabled}
@@ -113,7 +115,7 @@ export default function PropertiesPanel({ open }: { open: boolean }) {
                 pageNumbers: { ...s.pageNumbers, enabled: e.target.checked },
               }))
             }
-          />{" "}
+          />
           Enable page numbers
         </label>
         <label>Format</label>

@@ -80,9 +80,10 @@ export type ToolKey =
   | "qr-code-generator"
   | "password-generator"
   | "word-counter"
-  | "pdf-editor";
+  | "pdf-editor"
+  | "speed-test";
 
-export type ToolCategory = "Business" | "Privacy" | "Developer";
+export type ToolCategory = "Business" | "Privacy" | "Developer" | "Network";
 export type ToolIconName =
   | "invoice"
   | "mail"
@@ -95,7 +96,8 @@ export type ToolIconName =
   | "qr"
   | "lock"
   | "text"
-  | "pdf";
+  | "pdf"
+  | "speed";
 
 export type Tool = {
   name: string;
@@ -217,6 +219,15 @@ export const TOOLS: Record<ToolKey, Tool> = {
     runsIn: "browser",
     icon: "pdf",
     tags: ["Merge", "Split", "Sign", "Edit"],
+  },
+  "speed-test": {
+    name: "Internet Speed Test",
+    path: "/tools/speed-test",
+    summary: "Measure download, upload, ping, jitter and bufferbloat against RunExe servers. Free — no signup.",
+    category: "Network",
+    runsIn: "server",
+    icon: "speed",
+    tags: ["Download", "Upload", "Ping", "Bufferbloat"],
   },
 };
 

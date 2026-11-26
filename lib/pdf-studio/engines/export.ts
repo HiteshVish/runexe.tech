@@ -203,6 +203,13 @@ export async function exportSession(session: DocumentSession): Promise<Uint8Arra
       const [copied] = await out.copyPages(src, [pm.sourcePageIndex]);
       page = out.addPage(copied);
       if (pm.rotation) page.setRotation(degrees(pm.rotation));
+      const margin = pm.cropMargin ?? 0;
+      if (margin > 0) {
+        const { width: mw, height: mh } = page.getSize();
+        const w = Math.max(36, mw - margin * 2);
+        const h = Math.max(36, mh - margin * 2);
+        page.setCropBox(margin, margin, w, h);
+      }
     }
 
     const objs = Object.values(session.objects)

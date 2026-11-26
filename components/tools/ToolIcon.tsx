@@ -69,6 +69,13 @@ const PATHS: Record<ToolIconName, React.ReactNode> = {
       <path d="M10 13h4M10 17h4M10 9h1" />
     </>
   ),
+  speed: (
+    <>
+      <path d="M12 21a9 9 0 1 1 9-9" />
+      <path d="M12 12l5-5" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+    </>
+  ),
 };
 
 export default function ToolIcon({ name }: { name: ToolIconName }) {

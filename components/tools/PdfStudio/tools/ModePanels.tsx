@@ -154,72 +154,96 @@ export default function ModePanels() {
     }
   }
 
+  function sigPoint(e: React.PointerEvent<HTMLCanvasElement>) {
+    const c = sigCanvasRef.current!;
+    const r = c.getBoundingClientRect();
+    return {
+      x: ((e.clientX - r.left) * c.width) / r.width,
+      y: ((e.clientY - r.top) * c.height) / r.height,
+    };
+  }
+
   return (
     <div className="ps-panel-tools">
       {(mode === "split" || mode === "remove-pages") && (
-        <>
+        <div className="ps-block">
           <h3>Split / extract</h3>
           <label>Page ranges</label>
           <input value={ranges} onChange={(e) => setRanges(e.target.value)} placeholder="1-3, 5, 8-10" />
-          <button
-            type="button"
-            className="ps-btn ps-btn--primary"
-            style={{ marginTop: 8 }}
-            onClick={() => {
-              const count = primarySource?.pageCount ?? session.pageOrder.length;
-              const parsed = parsePageRanges(ranges, count);
-              if (!parsed.ok) {
-                setError(parsed.error);
-                return;
-              }
-              void splitDownload([parsed.indices]);
-            }}
-          >
-            Extract ranges
-          </button>
-          <button type="button" className="ps-btn" style={{ marginTop: 6 }} onClick={() => void splitDownload(splitEveryPage(primarySource?.pageCount ?? 0))}>
-            Split every page (ZIP)
-          </button>
+          <div className="ps-actions ps-actions--stack">
+            <button
+              type="button"
+              className="ps-btn ps-btn--primary"
+              onClick={() => {
+                const count = primarySource?.pageCount ?? session.pageOrder.length;
+                const parsed = parsePageRanges(ranges, count);
+                if (!parsed.ok) {
+                  setError(parsed.error);
+                  return;
+                }
+                void splitDownload([parsed.indices]);
+              }}
+            >
+              Extract ranges
+            </button>
+            <button type="button" className="ps-btn" onClick={() => void splitDownload(splitEveryPage(primarySource?.pageCount ?? 0))}>
+              Split every page (ZIP)
+            </button>
+          </div>
           <label>Every N pages</label>
           <input type="number" min={1} value={everyN} onChange={(e) => setEveryN(Number(e.target.value) || 1)} />
-          <button type="button" className="ps-btn" onClick={() => void splitDownload(splitEveryN(primarySource?.pageCount ?? 0, everyN))}>
-            Split every N (ZIP)
-          </button>
-        </>
+          <div className="ps-actions">
+            <button type="button" className="ps-btn" onClick={() => void splitDownload(splitEveryN(primarySource?.pageCount ?? 0, everyN))}>
+              Split every N (ZIP)
+            </button>
+          </div>
+        </div>
       )}
 
       {(mode === "sign" || mode === "editor") && (
-        <>
+        <div className="ps-block">
           <h3>Electronic signature</h3>
-          <p style={{ fontSize: "0.75rem", color: "var(--ps-muted)" }}>Drawn signature — not a certificate-based digital signature.</p>
+          <p className="ps-block-lead">Draw or upload — electronic appearance only, not a certificate signature.</p>
           <canvas
             ref={sigCanvasRef}
             className="ps-sig-pad"
-            width={280}
-            height={140}
+            width={560}
+            height={256}
             onPointerDown={(e) => {
+              const canvas = sigCanvasRef.current;
+              const ctx = canvas?.getContext("2d");
+              if (!canvas || !ctx) return;
               drawing.current = true;
-              const ctx = sigCanvasRef.current?.getContext("2d");
-              if (!ctx) return;
-              const r = sigCanvasRef.current!.getBoundingClientRect();
-              ctx.strokeStyle = "#111";
-              ctx.lineWidth = 2;
+              canvas.setPointerCapture(e.pointerId);
+              const p = sigPoint(e);
+              ctx.strokeStyle = "#111111";
+              ctx.lineWidth = 3;
+              ctx.lineCap = "round";
+              ctx.lineJoin = "round";
               ctx.beginPath();
-              ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
+              ctx.moveTo(p.x, p.y);
             }}
             onPointerMove={(e) => {
               if (!drawing.current) return;
               const ctx = sigCanvasRef.current?.getContext("2d");
               if (!ctx) return;
-              const r = sigCanvasRef.current!.getBoundingClientRect();
-              ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
+              const p = sigPoint(e);
+              ctx.lineTo(p.x, p.y);
               ctx.stroke();
             }}
-            onPointerUp={() => {
+            onPointerUp={(e) => {
+              drawing.current = false;
+              try {
+                sigCanvasRef.current?.releasePointerCapture(e.pointerId);
+              } catch {
+                /* ignore */
+              }
+            }}
+            onPointerCancel={() => {
               drawing.current = false;
             }}
           />
-          <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
+          <div className="ps-actions">
             <button
               type="button"
               className="ps-btn"
@@ -235,55 +259,60 @@ export default function ModePanels() {
               Place signature
             </button>
           </div>
-          <button
-            type="button"
-            className="ps-btn"
-            style={{ marginTop: 6 }}
-            onClick={() => {
-              const input = document.createElement("input");
-              input.type = "file";
-              input.accept = "image/png,image/jpeg,image/webp";
-              input.onchange = () => {
-                const f = input.files?.[0];
-                const pageId = session.currentPageId ?? session.pageOrder[0];
-                if (!f || !pageId) return;
-                const src = URL.createObjectURL(f);
-                addObject({
-                  id: newId("obj"),
-                  pageId,
-                  type: "signature",
-                  x: 72,
-                  y: 72,
-                  width: 180,
-                  height: 60,
-                  rotation: 0,
-                  opacity: 1,
-                  zIndex: 50,
-                  src,
-                  lockAspect: true,
-                });
-              };
-              input.click();
-            }}
-          >
-            Upload signature image
-          </button>
-        </>
+          <div className="ps-actions ps-actions--stack">
+            <button
+              type="button"
+              className="ps-btn"
+              onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = "image/png,image/jpeg,image/webp";
+                input.onchange = () => {
+                  const f = input.files?.[0];
+                  const pageId = session.currentPageId ?? session.pageOrder[0];
+                  if (!f || !pageId) return;
+                  const src = URL.createObjectURL(f);
+                  addObject({
+                    id: newId("obj"),
+                    pageId,
+                    type: "signature",
+                    x: 72,
+                    y: 72,
+                    width: 180,
+                    height: 60,
+                    rotation: 0,
+                    opacity: 1,
+                    zIndex: 50,
+                    src,
+                    lockAspect: true,
+                  });
+                };
+                input.click();
+              }}
+            >
+              Upload signature image
+            </button>
+          </div>
+        </div>
       )}
 
       {(mode === "watermark" || mode === "editor") && (
-        <>
+        <div className="ps-block">
           <h3>Watermark</h3>
-          <input value={wmText} onChange={(e) => setWmText(e.target.value)} />
-          <button type="button" className="ps-btn ps-btn--primary" style={{ marginTop: 6 }} onClick={addWatermark}>
-            Apply watermark
-          </button>
-        </>
+          <label>Text</label>
+          <input value={wmText} onChange={(e) => setWmText(e.target.value)} aria-label="Watermark text" />
+          <div className="ps-actions">
+            <button type="button" className="ps-btn ps-btn--primary" onClick={addWatermark}>
+              Apply watermark
+            </button>
+          </div>
+        </div>
       )}
 
       {mode === "compress" && (
-        <>
+        <div className="ps-block">
           <h3>Compress</h3>
+          <label>Preset</label>
           <select value={compressPreset} onChange={(e) => setCompressPreset(e.target.value as CompressPreset)}>
             <option value="lossless">Lossless optimize</option>
             <option value="high">High quality (raster)</option>
@@ -293,7 +322,7 @@ export default function ModePanels() {
           </select>
           {compressPreset === "target" && (
             <>
-              <label>Target KB</label>
+              <label>Target size</label>
               <select value={targetKb} onChange={(e) => setTargetKb(Number(e.target.value))}>
                 {[50, 100, 200, 500, 1024, 2048].map((n) => (
                   <option key={n} value={n}>
@@ -303,41 +332,49 @@ export default function ModePanels() {
               </select>
             </>
           )}
-          <button type="button" className="ps-btn ps-btn--primary" style={{ marginTop: 8 }} onClick={() => void runCompress()}>
-            Compress & download
-          </button>
-          {compressInfo && <p style={{ fontSize: "0.75rem", marginTop: 8 }}>{compressInfo}</p>}
-        </>
+          <div className="ps-actions">
+            <button type="button" className="ps-btn ps-btn--primary" onClick={() => void runCompress()}>
+              Compress & download
+            </button>
+          </div>
+          {compressInfo && <p className="ps-block-lead" style={{ marginTop: 10 }}>{compressInfo}</p>}
+        </div>
       )}
 
       {mode === "pdf-to-image" && (
-        <>
+        <div className="ps-block">
           <h3>PDF to images</h3>
-          <button type="button" className="ps-btn ps-btn--primary" onClick={() => void pdfToImages()}>
-            Download JPG ZIP
-          </button>
-        </>
+          <div className="ps-actions">
+            <button type="button" className="ps-btn ps-btn--primary" onClick={() => void pdfToImages()}>
+              Download JPG ZIP
+            </button>
+          </div>
+        </div>
       )}
 
       {(mode === "merge" || mode === "organize" || mode === "rotate") && (
-        <p style={{ fontSize: "0.8rem", color: "var(--ps-muted)" }}>
-          Use the page sidebar to reorder, rotate, duplicate or delete pages, then Download PDF.
-        </p>
+        <div className="ps-block">
+          <h3>Pages</h3>
+          <p className="ps-empty">Use the page sidebar to reorder, rotate, duplicate or delete pages, then Download.</p>
+        </div>
       )}
 
       {mode === "add-text" && (
-        <button type="button" className="ps-btn ps-btn--primary" onClick={() => setTool("text")}>
-          Click a page to add text
-        </button>
+        <div className="ps-block">
+          <h3>Add text</h3>
+          <div className="ps-actions">
+            <button type="button" className="ps-btn ps-btn--primary" onClick={() => setTool("text")}>
+              Click a page to add text
+            </button>
+          </div>
+        </div>
       )}
 
       {mode === "crop" && <CropControls />}
 
       {mode === "editor" && <FormsPanel />}
 
-      {mode === "metadata" && primarySource && (
-        <MetadataEditor />
-      )}
+      {mode === "metadata" && primarySource && <MetadataEditor />}
     </div>
   );
 }
@@ -348,37 +385,34 @@ function CropControls() {
   const [margin, setMargin] = useState(36);
   if (!session) return null;
   return (
-    <>
+    <div className="ps-block">
       <h3>Crop</h3>
-      <p style={{ fontSize: "0.75rem", color: "var(--ps-muted)" }}>
-        Shrinks page boxes by a margin. This does not securely erase hidden content outside the crop.
+      <p className="ps-block-lead">
+        Sets a crop box inset on export (preview shows a guide). Cropping alone does not securely erase hidden content.
       </p>
       <label>Margin (pt)</label>
       <input type="number" min={0} value={margin} onChange={(e) => setMargin(Number(e.target.value) || 0)} />
-      <button
-        type="button"
-        className="ps-btn ps-btn--primary"
-        style={{ marginTop: 8 }}
-        onClick={() =>
-          commit("crop pages", (s) => {
-            const ids = s.selectedPageIds.length ? s.selectedPageIds : s.pageOrder;
-            const pages = { ...s.pages };
-            for (const id of ids) {
-              const p = pages[id];
-              if (!p) continue;
-              pages[id] = {
-                ...p,
-                width: Math.max(72, p.width - margin * 2),
-                height: Math.max(72, p.height - margin * 2),
-              };
-            }
-            return { ...s, pages };
-          })
-        }
-      >
-        Apply crop to selected
-      </button>
-    </>
+      <div className="ps-actions">
+        <button
+          type="button"
+          className="ps-btn ps-btn--primary"
+          onClick={() =>
+            commit("crop pages", (s) => {
+              const ids = s.selectedPageIds.length ? s.selectedPageIds : s.pageOrder;
+              const pages = { ...s.pages };
+              for (const id of ids) {
+                const p = pages[id];
+                if (!p) continue;
+                pages[id] = { ...p, cropMargin: margin };
+              }
+              return { ...s, pages };
+            })
+          }
+        >
+          Apply crop to selected
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -412,12 +446,14 @@ function FormsPanel() {
 
   if (!session) return null;
   return (
-    <>
+    <div className="ps-block">
       <h3>Form fields</h3>
-      <button type="button" className="ps-btn" onClick={() => void loadFields()}>
-        Detect AcroForm fields
-      </button>
-      {msg && <p style={{ fontSize: "0.75rem", color: "var(--ps-muted)" }}>{msg}</p>}
+      <div className="ps-actions">
+        <button type="button" className="ps-btn" onClick={() => void loadFields()}>
+          Detect AcroForm fields
+        </button>
+      </div>
+      {msg && <p className="ps-block-lead" style={{ marginTop: 10 }}>{msg}</p>}
       {fields.map((f) => {
         const existing = session.formValues.find((v) => v.name === f.name);
         return (
@@ -437,7 +473,7 @@ function FormsPanel() {
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
 
@@ -484,11 +520,10 @@ function MetadataEditor() {
   }
 
   return (
-    <>
+    <div className="ps-block">
       <h3>Metadata</h3>
-      <p style={{ fontSize: "0.75rem", color: "var(--ps-muted)" }}>
-        Edits Title, Author, Subject and Keywords. Strip removes those fields and Producer/Creator — not a full
-        sanitization of hidden data.
+      <p className="ps-block-lead">
+        Edits Title, Author, Subject and Keywords. Strip removes those fields and Producer/Creator — not full sanitization.
       </p>
       <label>Title</label>
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -498,12 +533,14 @@ function MetadataEditor() {
       <input value={subject} onChange={(e) => setSubject(e.target.value)} />
       <label>Keywords</label>
       <input value={keywords} onChange={(e) => setKeywords(e.target.value)} />
-      <button type="button" className="ps-btn ps-btn--primary" style={{ marginTop: 8 }} onClick={() => void applyMeta(false)}>
-        Save metadata PDF
-      </button>
-      <button type="button" className="ps-btn" style={{ marginTop: 6 }} onClick={() => void applyMeta(true)}>
-        Strip metadata & download
-      </button>
-    </>
+      <div className="ps-actions ps-actions--stack">
+        <button type="button" className="ps-btn ps-btn--primary" onClick={() => void applyMeta(false)}>
+          Save metadata PDF
+        </button>
+        <button type="button" className="ps-btn" onClick={() => void applyMeta(true)}>
+          Strip metadata & download
+        </button>
+      </div>
+    </div>
   );
 }

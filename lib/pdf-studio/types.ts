@@ -84,6 +84,8 @@ export type PageModel = {
   height: number;
   rotation: 0 | 90 | 180 | 270;
   blank?: boolean;
+  /** Uniform crop inset in PDF points; applied on export via crop box (does not erase hidden content). */
+  cropMargin?: number;
 };
 
 export type SourceDoc = {

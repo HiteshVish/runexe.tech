@@ -7,7 +7,7 @@ import ToolIcon from "@/components/tools/ToolIcon";
 import type { Tool, ToolCategory, ToolKey } from "@/lib/seo/site";
 
 type Entry = Tool & { key: ToolKey };
-const CATEGORIES: ("All" | ToolCategory)[] = ["All", "Developer", "Business", "Privacy"];
+const CATEGORIES: ("All" | ToolCategory)[] = ["All", "Developer", "Business", "Privacy", "Network"];
 
 export default function ToolsDirectory({ tools }: { tools: Entry[] }) {
   const [query, setQuery] = useState("");

@@ -14,23 +14,29 @@ export default function StatusBar() {
       <span>
         Page {pageIndex || "—"} / {session.pageOrder.length}
       </span>
-      <span>
+      <span className="ps-status-zoom">
         <button type="button" className="ps-btn ps-btn--icon" onClick={() => setZoom(session.zoom / 1.15)} aria-label="Zoom out">
           −
-        </button>{" "}
-        {Math.round(session.zoom * 100)}%{" "}
+        </button>
+        {Math.round(session.zoom * 100)}%
         <button type="button" className="ps-btn ps-btn--icon" onClick={() => setZoom(session.zoom * 1.15)} aria-label="Zoom in">
           +
         </button>
       </span>
-      <button type="button" className="ps-btn" onClick={() => usePdfStore.setState((st) => st.session ? { session: { ...st.session, zoom: 1, fitMode: "width" } } : st)}>
+      <button
+        type="button"
+        className="ps-btn"
+        onClick={() =>
+          usePdfStore.setState((st) => (st.session ? { session: { ...st.session, zoom: 1, fitMode: "width" } } : st))
+        }
+      >
         Fit width
       </button>
       <span>{(bytes / 1024).toFixed(0)} KB</span>
-      <span>{session.dirty ? "Unsaved changes" : "Saved export ready"}</span>
+      <span>{session.dirty ? "Unsaved changes" : "Ready to download"}</span>
       {session.processing && <span aria-live="polite">{session.processing}</span>}
       {session.error && (
-        <span className="ps-err" role="alert">
+        <span className="ps-err" role="alert" style={{ margin: 0 }}>
           {session.error}
         </span>
       )}

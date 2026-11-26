@@ -13,6 +13,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useState } from "react";
 import { loadPdfDocument, renderThumb } from "@/lib/pdf-studio/engines/pdfjs-loader";
 import { usePdfStore } from "@/lib/pdf-studio/store";
+import { Ico } from "../icons";
 
 function SortableThumb({
   id,
@@ -41,8 +42,8 @@ function SortableThumb({
         {...attributes}
         {...listeners}
       >
-        {thumb ? <img src={thumb} alt="" /> : <div style={{ aspectRatio: "3/4", background: "#ddd" }} />}
-        <span>Page {index + 1}</span>
+        {thumb ? <img src={thumb} alt="" /> : <div className="ps-thumb-placeholder" />}
+        <span>{index + 1}</span>
       </button>
     </li>
   );
@@ -51,7 +52,6 @@ function SortableThumb({
 export default function PageSidebar({ open }: { open: boolean }) {
   const session = usePdfStore((s) => s.session);
   const selectPages = usePdfStore((s) => s.selectPages);
-  const reorderPage = usePdfStore((s) => s.reorderPage);
   const rotateSelectedPages = usePdfStore((s) => s.rotateSelectedPages);
   const deleteSelectedPages = usePdfStore((s) => s.deleteSelectedPages);
   const duplicateSelectedPages = usePdfStore((s) => s.duplicateSelectedPages);
@@ -106,33 +106,20 @@ export default function PageSidebar({ open }: { open: boolean }) {
   }
 
   return (
-    <aside className={`ps-sidebar${open ? " is-drawer" : ""}`} hidden={!open && undefined} style={{ display: open ? undefined : "none" }}>
-      <div className="ps-panel-tools">
-        <h3>Pages</h3>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-          <button type="button" className="ps-btn" onClick={() => rotateSelectedPages(90)}>
-            Rotate CW
-          </button>
-          <button type="button" className="ps-btn" onClick={() => rotateSelectedPages(-90)}>
-            Rotate CCW
-          </button>
-          <button type="button" className="ps-btn" onClick={() => duplicateSelectedPages()}>
-            Duplicate
-          </button>
-          <button type="button" className="ps-btn" onClick={() => deleteSelectedPages()}>
-            Delete
-          </button>
-          <button type="button" className="ps-btn" onClick={() => insertBlankPage()}>
-            Blank
-          </button>
-          <button
-            type="button"
-            className="ps-btn"
-            onClick={() => selectPages([...session.pageOrder])}
-          >
-            Select all
-          </button>
-        </div>
+    <aside className={`ps-sidebar${open ? " is-drawer" : ""}`} style={{ display: open ? undefined : "none" }}>
+      <div className="ps-film-actions">
+        <button type="button" className="ps-btn ps-btn--icon" title="Rotate" aria-label="Rotate" onClick={() => rotateSelectedPages(90)}>
+          {Ico.rotate}
+        </button>
+        <button type="button" className="ps-btn ps-btn--icon" title="Duplicate" aria-label="Duplicate" onClick={() => duplicateSelectedPages()}>
+          {Ico.dup}
+        </button>
+        <button type="button" className="ps-btn ps-btn--icon" title="Delete page" aria-label="Delete page" onClick={() => deleteSelectedPages()}>
+          {Ico.trash}
+        </button>
+        <button type="button" className="ps-btn" title="Insert blank" onClick={() => insertBlankPage()}>
+          +
+        </button>
       </div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={session.pageOrder} strategy={verticalListSortingStrategy}>
@@ -160,8 +147,6 @@ export default function PageSidebar({ open }: { open: boolean }) {
           </ul>
         </SortableContext>
       </DndContext>
-      {/* silence unused */}
-      <span hidden>{String(!!reorderPage)}</span>
     </aside>
   );
 }

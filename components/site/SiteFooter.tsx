@@ -26,6 +26,7 @@ export default function SiteFooter() {
         <circle cx="590" cy="30" r="4" />
         <circle cx="890" cy="50" r="4" />
       </svg>
+
       <div className="sf-inner">
         <div className="sf-brand">
           <a href="/#hero" className="nav-logo" aria-label="RunExe Technology home">
@@ -33,11 +34,20 @@ export default function SiteFooter() {
             <img className="logo-dark" src="/assets/logo-trimmed-dark.png" alt="" aria-hidden="true" width={160} height={46} />
           </a>
           <p>
-            A software engineering studio building custom platforms, AI automation, mobile apps and cloud products.
+            A software engineering studio building custom platforms, AI automation, mobile apps and cloud
+            products.
           </p>
           <a href="/#contact" className="sf-cta">
             Start a project
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
               <path d="M7 17 17 7M8 7h9v9" />
             </svg>
           </a>
@@ -54,31 +64,18 @@ export default function SiteFooter() {
           </ul>
         </nav>
 
-        <nav className="sf-col" aria-label="Free tools">
-          <p className="sf-head">Free tools</p>
-          <ul>
-            {TOOL_KEYS.map((k) => (
-              <li key={k}>
-                <a href={TOOLS[k].path}>{TOOLS[k].name}</a>
-              </li>
-            ))}
-            <li>
-              <a href="/tools" className="sf-all">
-                All tools →
-              </a>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="sf-col">
+        <div className="sf-col sf-col--contact">
           <p className="sf-head">Get in touch</p>
-          <ul>
+          <ul className="sf-contact">
             <li>
               <a href="mailto:info@runexe.tech">info@runexe.tech</a>
             </li>
             <li>
               <a href="tel:+919326809409">+91 93268 09409</a>
             </li>
+          </ul>
+          <p className="sf-social-label">Social</p>
+          <ul className="sf-social">
             {SOCIAL.map((s) => (
               <li key={s.href}>
                 <a href={s.href} target="_blank" rel="noopener">
@@ -88,7 +85,24 @@ export default function SiteFooter() {
             ))}
           </ul>
         </div>
+
+        <nav className="sf-col sf-col--tools" aria-label="Free tools">
+          <div className="sf-tools-head">
+            <p className="sf-head">Free tools</p>
+            <a href="/tools" className="sf-all">
+              All tools →
+            </a>
+          </div>
+          <ul className="sf-tools">
+            {TOOL_KEYS.map((k) => (
+              <li key={k}>
+                <a href={TOOLS[k].path}>{TOOLS[k].name}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
+
       <div className="sf-bottom">
         <span>© {new Date().getFullYear()} RunExe Technology. Engineered to execute.</span>
         <span>Remote-first · Worldwide</span>
