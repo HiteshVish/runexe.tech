@@ -5,8 +5,13 @@ export const SITE_NAME = "RunExe Technology";
 export const SHORT_NAME = "RunExe";
 export const TAGLINE = "Engineering that executes.";
 export const EMAIL = "info@runexe.tech";
-export const PHONE = "+91 93268 09409";
-export const PHONE_E164 = "+919326809409";
+export const PHONES = [
+  { display: "+91 95540 22084", tel: "+919554022084" },
+  { display: "+91 93268 09409", tel: "+919326809409" },
+] as const;
+export const PHONE = PHONES[0].display;
+export const PHONE_E164 = PHONES[0].tel;
+export const PHONE_E164_LIST = PHONES.map((p) => p.tel);
 export const LOGO_PATH = "/assets/logo-full.png";
 export const ORG_ID = `${SITE_URL}/#organization`;
 export const WEBSITE_ID = `${SITE_URL}/#website`;

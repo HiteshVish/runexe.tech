@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getLenis, initSiteChrome } from "@/lib/site/site-chrome";
-import { BROWSER_TOOL_COUNT, TOOLS, TOOL_KEYS } from "@/lib/seo/site";
+import { BROWSER_TOOL_COUNT, PHONES, TOOLS, TOOL_KEYS } from "@/lib/seo/site";
 import ToolIcon from "@/components/tools/ToolIcon";
 import "@/styles/site-chrome.css";
 import "lenis/dist/lenis.css";
@@ -203,7 +203,11 @@ export default function SiteChrome() {
           </a>
           <p className="mnav-meta">
             <a href="mailto:info@runexe.tech">info@runexe.tech</a>
-            <a href="tel:+919326809409">+91 93268 09409</a>
+            {PHONES.map((p) => (
+              <a key={p.tel} href={`tel:${p.tel}`}>
+                {p.display}
+              </a>
+            ))}
           </p>
         </nav>
       </div>

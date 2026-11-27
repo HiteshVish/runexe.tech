@@ -1,4 +1,4 @@
-import { TOOLS, TOOL_KEYS } from "@/lib/seo/site";
+import { PHONES, TOOLS, TOOL_KEYS } from "@/lib/seo/site";
 
 const COMPANY = [
   { href: "/#about", label: "About" },
@@ -70,9 +70,11 @@ export default function SiteFooter() {
             <li>
               <a href="mailto:info@runexe.tech">info@runexe.tech</a>
             </li>
-            <li>
-              <a href="tel:+919326809409">+91 93268 09409</a>
-            </li>
+            {PHONES.map((p) => (
+              <li key={p.tel}>
+                <a href={`tel:${p.tel}`}>{p.display}</a>
+              </li>
+            ))}
           </ul>
           <p className="sf-social-label">Social</p>
           <ul className="sf-social">
